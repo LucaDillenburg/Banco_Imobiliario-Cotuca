@@ -1,0 +1,3 @@
+BANCO IMOBILIÁRIO
+ - menu com "Banco Imobiliário" + opções de quantos jogadores + valores para cada um iniciar
+ - colocar imagem na tela inteira um canvas (colocar banco imobiliário atrás, onde os piões estao, onde casas estão, "dado" como do mário world, opcao para comprar e colocar casa no terreno)

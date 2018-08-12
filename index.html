@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Banco Imobiliário Cotuca</title>
+	<meta charset="utf-8">
+	<!-- SCRIPTS -->
+	<script src="script/myscripts.js"></script>
+	<script src="script/Tabuleiro.js"></script>
+	<script src="script/Casa.js"></script>
+	<script src="script/Personagem.js"></script>
+	<script src="script/Notificacao.js"></script>
+	<!-- STYLE -->
+	<link rel="stylesheet" type="text/css" href="style/mystyle.css">
+	<link rel="stylesheet" type="text/css" href="style/materialize/css/materialize.min.css">
+</head>
+<body onload="iniciar()">
+	<h1><center><u>Banco Imobiliario COTUCA</u></center></h1>
+	<canvas id="meuCanvas" onclick="clickCanvas()"></canvas>
+	
+	<center><label id="titleDado">Clique na tela para parar o dado:</label></center>
+	<center><div id="dado" class="card-panel teal lighten-2"><center>1</center></div></center>
+
+	<a id="btnPassarJogada" onclick="passarJogada()" class="waves-effect waves-light btn-large">Passar jogada</a>
+	<a id="btnComprarFelicidade" onclick="comprarFelicidade()" class="waves-effect waves-light btn-large">+ Felicidade</a>
+	<span id="lbComprarFelicidade"><i>Compre 20% de felicidade por R$10,00</i></span>
+
+	<a id="btnComprarCasa" onclick="comprarCasa()" class="waves-effect waves-light btn-large">Comprar casa</a>
+</body>
+</html>

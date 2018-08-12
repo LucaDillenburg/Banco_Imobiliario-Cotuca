@@ -1,0 +1,40 @@
+ - Portaria (+$$, -vida) //se passar pela portaria ()
+ - SOI/prisao (-vida)   //fica preso ateh 3 rodadas (cada rodada tem chance de "girar" o dado, se tirar 6)
+ - Férias //vida = 100%
+ - Notificações
+
+ - Bandeco (-$, -vida)         //da pra comprar $$$$ (ganha bastante)
+ - Cantina (-$$, +vida)        //da pra comprar $$$$$$ (ganha muuitoo)
+ - salas (---vida, pode comprar) //ganha qtdAndou*x
+ - laboratórios (--vida, pode comprar) //ganha qtdAndou*y (y<x)
+ - Educação Física/Ginásio (+vida, pode comprar)
+
+ - caminho das arvores (pode comprar)
+ - biblioteca (pode comprar)
+ - grafica (pode comprar)
+ - tenda (pode comprar)
+ - corredores (pode comprar)
+ - armario (pode comprar)
+ - posto (pode comprar)
+ - bombeiros (pode comprar)
+
+notificacoes
+ - voce esqueceu seu RA 
+ - nota baixa
+ - nota alta
+ - professor faltou: aula livre
+ - professor está de perseguindo
+
+
+atributos do jogador: vida e felicidade
+
+opcao para comprar felicidade
+
+se vida chegar a zero ou dinheiro ter que ser menor que zero, usuario perde
+
+
+programacao:
+ - fazer classe Jogador, Casa, Tabuleiro
+ - canvas na tela inteira (no height pelo menos)
+ - botao para parar dado
+ - valores na tela do usuario (Dinheiro, Vida, Lugares comprados)
