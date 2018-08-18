@@ -5,6 +5,8 @@ function Personagem()
 	this._dinheiro = 30;
 	this.pos = 0;
 	this.vivo = true;
+
+	this.x = 20;
 }
 
 

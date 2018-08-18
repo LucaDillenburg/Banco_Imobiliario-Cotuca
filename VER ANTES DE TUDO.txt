@@ -1,3 +1,0 @@
-ver se Math.abs nao tira o fixed(2) dos dinheiros
-
-comprar felicidade nao estah aparecendo

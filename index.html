@@ -13,12 +13,15 @@
 	<link rel="stylesheet" type="text/css" href="style/mystyle.css">
 	<link rel="stylesheet" type="text/css" href="style/materialize/css/materialize.min.css">
 </head>
-<body onload="iniciar()">
-	<h1><center><u>Banco Imobiliario COTUCA</u></center></h1>
+<body onload="iniciar()" onclick="clickCanvas()">
+	<h1 onclick="clickCanvas()"><center><u>Banco Imobiliario COTUCA</u></center></h1>
+
 	<canvas id="meuCanvas" onclick="clickCanvas()"></canvas>
-	
-	<center><label id="titleDado">Clique na tela para parar o dado:</label></center>
-	<center><div id="dado" class="card-panel teal lighten-2" onclick="clickCanvas()"><center>1</center></div></center>
+
+	<label id="informacoesPersCasa"></label>
+
+	<div id="divTitleDado" class="centralize"><label id="titleDado" onclick="clickCanvas()">Clique na tela para parar o dado:</label></div>
+	<div id="divDado" class="centralize"><div id="dado" class="card-panel teal lighten-2" onclick="clickCanvas()">1</div></div>
 
 	<a id="btnPassarJogada" onclick="passarJogada()" class="waves-effect waves-light btn-large">Passar jogada</a>
 	<a id="btnComprarFelicidade" onclick="comprarFelicidade()" class="waves-effect waves-light btn-large">+ Felicidade</a>

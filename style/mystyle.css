@@ -1,20 +1,10 @@
-/*COLOCAR TUDO COM PX*/
-
-
 /*GERAL*/
 body
 {
 	background-color: #607d8b;
 	font-family: "Times New Roman", Times, serif;
-}
 
-#meuCanvas
-{
-	height: 620px;
-	width: 100%;
-	background-image: url("../img/Tabuleiro Banco Imobiliário.png");
-	background-repeat: no-repeat;
-	background-position: center;
+	width: 1583px;
 }
 
 h1
@@ -24,7 +14,87 @@ h1
 
 
 
-/*BUTTONS*/
+/**/
+/*ESQUERDA: label informacoes com personagens e da casa*/
+#informacoesPersCasa
+{
+	position: absolute;
+	color: white;
+	font-size: 25px;
+
+	top: 137px;
+	left: 17px;
+	width: 225px;
+
+	word-wrap:  break-word;
+}
+
+
+/**/
+/*CENTRO*/
+#meuCanvas
+{
+	margin-left: 250px;
+	height: 624px;
+	width: 1088px;
+	background-image: url("../img/Tabuleiro Banco Imobiliário.png");
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+
+/*DADOS*/
+#titleDado,
+#dado
+{
+	visibility: hidden;
+}
+
+.centralize
+{
+	/*margin: auto; centralize*/
+	margin-left: auto;
+    margin-right: auto;
+
+    background-color: rgba(0,0,0);
+}
+
+#divTitleDado
+{
+	width: 1190px;
+}
+
+#divDado
+{
+	width: 400px;
+}
+
+#titleDado
+{
+	position: absolute;
+	font-size: 92px;
+	color: white;
+	background-color: #ff3d00;
+	top: 160px;
+}
+
+#dado
+{
+	position: absolute;
+	font-size: 200px;
+	color: white;
+	background-color: #ff3d00;
+	top: 300px;
+	width: 400px;
+	height: 370px;
+
+	text-align: center;
+}
+
+
+
+/**/
+/*DIREITA: BUTTONS*/
 #btnPassarJogada,
 #btnComprarFelicidade,
 #btnComprarCasa,
@@ -33,58 +103,29 @@ h1
 	position: absolute;
 	visibility: hidden;
 	width: 177px;
-	left: 86.5%;
+	left: 1372px;
 }
 
 #btnPassarJogada
 {
-	top: 20%;
+	top: 172px;
 	background-color: #1565c0;
 }
 
 #btnComprarFelicidade
 {
-	top: 30%;
+	top: 258px;
 	background-color: #1b5e20;
 }
 
 #lbComprarFelicidade
 {
-	top: 37%;
+	top: 318.2px;
 	color: white;
 }
 
 #btnComprarCasa
 {
-	top: 50%;
+	top: 430px;
 	background-color: #d50000;
-}
-
-
-
-/*OUTROS*/
-#titleDado,
-#dado
-{
-	visibility: hidden;
-}
-
-#titleDado
-{
-	font-size: 80px;
-	color: white;
-	background-color: #ff3d00;
-	top: -30%;
-}
-
-#dado
-{
-	position: absolute;
-	font-size: 150px;
-	color: white;
-	background-color: #ff3d00;
-	top: 30%;
-	left: 50%;
-	width: 300px;
-	height: 300px;
 }
