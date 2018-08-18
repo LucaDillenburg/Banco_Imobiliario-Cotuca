@@ -1,14 +1,10 @@
-function Casa(nomeLugar, preco, qtdDinheiroMuda, qtdFelicidadeMuda, x, y)
+function Casa(nomeLugar, preco, qtdDinheiroMuda, qtdFelicidadeMuda)
 {
 	this.nomeLugar = nomeLugar;
 	this.indexDono = -1;
 	this.qtdFelicidadeMuda = qtdFelicidadeMuda;
 	this._qtdDinheiroMuda = qtdDinheiroMuda;
 	this._preco = preco;
-
-	//location
-	this.x = x;
-	this.y = y;
 }
 
 Casa.prototype.getQtdDinheiroMuda = function()
@@ -36,7 +32,7 @@ Casa.prototype.comprar = function(pers, index)
 	if(this._preco == 0)
 		throw new Exception("Nao se pode comprar essa casa!");
 
-	pers.mudarDinheiro(-this._preco);
+	pers.dinheiro -= this._preco;
 	this.indexDono = index;
 	return true;
 }
