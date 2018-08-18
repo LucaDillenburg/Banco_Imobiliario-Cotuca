@@ -31,7 +31,7 @@ h1
 #lbComprarFelicidade
 {
 	position: absolute;
-	/*visibility: hidden;*/
+	visibility: hidden;
 	width: 177px;
 	left: 86.5%;
 }
@@ -84,6 +84,7 @@ h1
 	color: white;
 	background-color: #ff3d00;
 	top: 30%;
+	left: 50%;
 	width: 300px;
 	height: 300px;
 }

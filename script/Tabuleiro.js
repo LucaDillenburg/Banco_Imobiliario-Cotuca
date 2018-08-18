@@ -1,6 +1,6 @@
 function Tabuleiro(qtdPers = 4)
 {
-	this.casas = { 
+	this._casas = { 
 					 0: new Casa("Portaria", 0, +2000, 0), //PORTARIA
                      1: new Casa("Corredor", 6.00, -0.75, 0),
                      2: new Casa("Tenda", 5.50, -0.50, 0),
@@ -11,7 +11,7 @@ function Tabuleiro(qtdPers = 4)
                		 7: new Casa("Salas", 6.00, -0.75, -30),
                		 8: new Casa("SOI", 0, 0, 0), //SOI
                		 9: new Casa("Caminho das Árvores", 5.00, -0.50, 0),
-               		10: new Casa("Gráfica", 10.00, 1.25, 0),
+               		10: new Casa("Gráfica", 10.00, -1.25, 0),
                		11: new Casa("Bombeiros", 7.00, -1.50, +20),
                		12: new Casa("Laboratórios", 6.50, -1.00, -30),
                		13: new Casa("Férias", 0, 0, +100), //ferias
@@ -20,7 +20,7 @@ function Tabuleiro(qtdPers = 4)
                		16: new Casa("Armário", 6.20, -1.00, 0),
                	};
 
-    this.notificacoes = { 
+    this._notificacoes = { 
     				0: new Notificacao("Você esqueceu seu RA! Tome mais cuidado da próxima vez...", 
     					0, -20),
     				1: new Notificacao("Um professor faltou! Você sabe o que isso significa: aula livre!", 
@@ -51,13 +51,13 @@ function Tabuleiro(qtdPers = 4)
     					-3, +20),
                	};
 
-    this.indexPersonagemAtual = 0;
-	this.personagens = new Array(qtdPers);
-	for (let i = 0; i < this.personagens.length; i++)
-		this.personagens[i] = new Personagem();
+    this._indexPersonagemAtual = 0;
+	this._personagens = new Array(qtdPers);
+	for (let i = 0; i < qtdPers; i++)
+		this._personagens[i] = new Personagem();
 }
 
-const qtdNotific = 13;
+const _QTD_NOTIFICACOES = 13;
 
 //CASAS ESPECIAIS
 //quando cair nos especiais, fazer coisas diferentes (notificação, SOI, Gráfica)
@@ -69,13 +69,13 @@ Tabuleiro.prototype._INDEX_FERIAS = 13;
 
 Tabuleiro.prototype.procPersGirouDado = function(nDado)
 {
-	let pers = this.personagens[this.indexPersonagemAtual];
+	let pers = this._personagens[this._indexPersonagemAtual];
 
 	/*
 	result[0] //resultado da execucao (0: execucao normal; -1: personagem morreu; 
 				1: personagem saiu da prisao; 2: personagem teve prisao diminuida)
     result[1] //acoesCasaAtual (notificacao ou soh oq aconteceu com o personagem naquela casa)
-    result[2] //casa atual
+    result[2] //string para mostrar ao usuario sobre casa atual
 	result[3] //ehNotificacao (boolean)
 	*/
 	let result = new Array(4);
@@ -99,17 +99,17 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 	}else
 	{
 		pers.andarCasas(nDado);
-		let casaAtual = this.casas[pers.pos];
+		let casaAtual = this._casas[pers.pos];
 		
-		if(casaAtual.indexDono != this.indexPersonagemAtual)
+		if(casaAtual.indexDono != this._indexPersonagemAtual)
 		//usuario nao eh dono
 		{
 			switch (pers.pos)
 			{
 				case this._INDEX_NOTIFICACAO:
 					//pegar notificacao aleatoria
-					let indexNotific = Math.floor(Math.random()*qtdNotific);					
-					let notificacao = this.notificacoes[indexNotific];
+					let indexNotific = Math.floor(Math.random()*_QTD_NOTIFICACOES);					
+					let notificacao = this._notificacoes[indexNotific];
 
 					//fazer alteracoes no pers
 					notificacao.fazerAlteracoesPers(pers);
@@ -123,18 +123,18 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 					result[3] = false; //nao eh notificacao
 					break;
 				default:
-					let qtdDinheiroMuda = casaAtual.qtdDinheiroMuda;
+					let qtdDinheiroMuda = casaAtual._qtdDinheiroMuda;
 					if(pers.pos == this._INDEX_GRAFICA)
 						qtdDinheiroMuda *= nDado;
 
 					pers.mudarFelicidade(casaAtual.qtdFelicidadeMuda);
 					pers.mudarDinheiro(qtdDinheiroMuda);
 
-					result[1] = new Notificacao(null, parseFloat(qtdDinheiroMuda.toFixed(2)), casaAtual.qtdFelicidadeMuda);
+					result[1] = new Notificacao(null, qtdDinheiroMuda, casaAtual.qtdFelicidadeMuda);
 
 					if(casaAtual.indexDono>=0)
 					{
-						this.personagens[casaAtual.indexDono].mudarDinheiro(-qtdDinheiroMuda); 
+						this._personagens[casaAtual.indexDono].mudarDinheiro(-qtdDinheiroMuda); 
 						//personagem que tem a casa ganha dinheiro
 
 						result[1].textoNotific = "Você caiu na casa do Personagem" + (casaAtual.indexDono+1) + 
@@ -159,71 +159,71 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 			result[0] = -1;
 	}
 
-	result[2] = this.casas[pers.pos];
+	result[2] = this._strCasaParaUsuario(this._casas[pers.pos], pers.pos);
 	return result;
 }
 
 Tabuleiro.prototype.proximoPersonagem = function()
 {
-	this.indexPersonagemAtual++;
-	if(this.indexPersonagemAtual >= this.personagens.length)
-		this.indexPersonagemAtual = 0;
+	this._indexPersonagemAtual++;
+	if(this._indexPersonagemAtual >= this._personagens.length) //aqui ver se length existe alert(length)
+		this._indexPersonagemAtual = 0;
 
 	var indexGanhou = this._indexGanhou();
 
 	if(indexGanhou < 0)
-		while (!this.personagens[this.indexPersonagemAtual].vivo)
+		while (!this._personagens[this._indexPersonagemAtual].vivo)
 		{
-			this.indexPersonagemAtual++;
-			if(this.indexPersonagemAtual >= this.personagens.length)
-				this.indexPersonagemAtual = 0;
+			this._indexPersonagemAtual++;
+			if(this._indexPersonagemAtual >= this._personagens.length)
+				this._indexPersonagemAtual = 0;
 		}
 
 	if(indexGanhou >= 0)
-		this.indexPersonagemAtual = indexGanhou;
+		this._indexPersonagemAtual = indexGanhou;
 	var result = 
 	{
 		0: indexGanhou>=0, // se alguem ganhou (se soh resta um usuario)
-		1: this.personagens[this.indexPersonagemAtual], //personagem
+		1: this._personagens[this._indexPersonagemAtual], //personagem
 	};
 	return result;
 }
 
 Tabuleiro.prototype.getPersonagemAtual = function()
 {
-	return this.personagens[this.indexPersonagemAtual];
+	return this._personagens[this.indexPersonagemAtual];
 }
 
 
 //buttons felicidade e casa
-const qtdFelicidadeCompraFelicidade = 20;
-const qtdDinheiroCompraFelicidade = -10;
+const _qtdFelicidadeCompraFelicidade = 20;
+const _qtdDinheiroCompraFelicidade = -10;
 Tabuleiro.prototype.persComprarFelicidade = function()
 {
-	var pers = this.personagens[this.indexPersonagemAtual];
-	pers.mudarFelicidade(qtdFelicidadeCompraFelicidade);
-	pers.mudarDinheiro(qtdDinheiroCompraFelicidade);
+	var pers = this._personagens[this._indexPersonagemAtual];
+	pers.mudarFelicidade(_qtdFelicidadeCompraFelicidade);
+	pers.mudarDinheiro(_qtdDinheiroCompraFelicidade);
 }
 
 Tabuleiro.prototype.persComprarCasa = function()
 {
-	var pers = this.personagens[this.indexPersonagemAtual];
-	var casa = this.casas[pers.pos];
-	casa.comprar(pers, this.indexPersonagemAtual);
+	var pers = this._personagens[this._indexPersonagemAtual];
+	var casa = this._casas[pers.pos];
+	casa.comprar(pers, this._indexPersonagemAtual);
 	return casa.nomeLugar;
 }
 
 Tabuleiro.prototype.personagemConsegueComprarCasa = function()
 {
-	return this._persQualquerConsegueComprarCasa(this.personagens[this.indexPersonagemAtual]);
+	return this._persQualquerConsegueComprarCasa(this._personagens[this._indexPersonagemAtual]);
 }
 
 Tabuleiro.prototype.personagemPodeComprarFelicidade = function()
 {
-	var pers = this.personagens[this.indexPersonagemAtual];
+	var pers = this._personagens[this._indexPersonagemAtual];
 	if(!pers.vivo)
 		return false;
-	return (pers.felicidade < 100 && pers.dinheiro >= qtdDinheiroCompraFelicidade);
+	return (pers.felicidade < 100 && pers._dinheiro >= _qtdDinheiroCompraFelicidade);
 }
 
 //auxiliar
@@ -238,16 +238,55 @@ Tabuleiro.prototype._persQualquerConsegueComprarCasa = function(pers)
 		return false;
 
 	//se casa tem ou nao dono
-	var casa = this.casas[pos];
-	return (casa.indexDono < 0 && pers.dinheiro >= casa.preco);
+	var casa = this._casas[pos];
+	return (casa.indexDono < 0 && pers._dinheiro >= casa._preco);
+}
+
+Tabuleiro.prototype._strCasaParaUsuario = function(casaAtual, index)
+{
+	var msg = "Casa atual: " + casaAtual.nomeLugar.toUpperCase();
+
+	switch (index)
+	{
+		case this._INDEX_FERIAS:
+			msg += "\nFelicidade = 100%";
+			break;
+		case 0: //inicio
+			msg += "\nGanha R$3.00 por volta";
+			break;
+		default:
+			if(casaAtual._qtdDinheiroMuda < 0)
+			{
+				msg += "\nAluguel: R$" + casaAtual.getAluguel();
+				if(index == this._INDEX_GRAFICA)
+					msg += " x (Número do dado)";
+			}else
+			if(casaAtual._qtdDinheiroMuda != 0)
+			{
+				msg += "\nGanha R$" + casaAtual.getQtdDinheiroMuda();
+				if(index == this._INDEX_GRAFICA)
+					msg += " x (Número do dado)";
+			}
+
+			
+			if (casaAtual.qtdFelicidadeMuda != 0)
+				msg += "\nFelicidade: " + Ajustar.IntegerComSinal(casaAtual.qtdFelicidadeMuda) + "%";
+			
+			if (casaAtual._preco != 0)
+				msg += "\nPreço: R$" + casaAtual.getPreco();
+
+			break;
+	}
+	
+	return msg;
 }
 
 Tabuleiro.prototype._indexGanhou = function()
 {
 	var qtdVivos = 0;
 	var indexUltimoPersVivo = -1;
-	for(let i = 0; i<this.personagens.length; i++)
-		if(this.personagens[i].vivo)
+	for(let i = 0; i<this._personagens.length; i++)
+		if(this._personagens[i].vivo)
 		{
 			qtdVivos++;
 			indexUltimoPersVivo = i;
@@ -264,9 +303,9 @@ Tabuleiro.prototype._indexGanhou = function()
 Tabuleiro.prototype._teste = function()
 {
 	let msg = "";
-	for(let i = 0; i<this.personagens.length; i++)
-		msg += "Personagem " + (i+1) + ": {Casa: " + this.personagens[i].pos + ", Dinheiro: " + this.personagens[i].dinheiro 
-			+ ", Felicidade: " + this.personagens[i].felicidade + ", Rodadas preso: " + this.personagens[i].presoSOI + "} \n";
+	for(let i = 0; i<this._personagens.length; i++)
+		msg += "Personagem " + (i+1) + ": {Casa: " + this._personagens[i].pos + ", Dinheiro: " + this._personagens[i].getDinheiro() 
+			+ ", Felicidade: " + this._personagens[i].felicidade + ", Rodadas preso: " + this._personagens[i]._presoSOI + "} \n";
 
 	alert(msg);
 }

@@ -3,29 +3,36 @@ function Casa(nomeLugar, preco, qtdDinheiroMuda, qtdFelicidadeMuda)
 	this.nomeLugar = nomeLugar;
 	this.indexDono = -1;
 	this.qtdFelicidadeMuda = qtdFelicidadeMuda;
-	this.qtdDinheiroMuda = qtdDinheiroMuda;
-	this.preco = preco;
+	this._qtdDinheiroMuda = qtdDinheiroMuda;
+	this._preco = preco;
 }
 
 Casa.prototype.getQtdDinheiroMuda = function()
 {
-	return parseFloat(this.qtdDinheiroMuda.toFixed(2));
+	return this._qtdDinheiroMuda.toFixed(2);
+}
+
+Casa.prototype.getAluguel = function()
+{
+	if(this._qtdDinheiroMuda > 0)
+		throw new Exception("Nao eh aluguel!");
+	return (-this._qtdDinheiroMuda).toFixed(2);
 }
 
 Casa.prototype.getPreco = function()
 {
-	return parseFloat(this.preco.toFixed(2));
+	return this._preco.toFixed(2);
 }
 
 Casa.prototype.comprar = function(pers, index)
 {
-	if (this.preco > pers.dinheiro)
+	if (this._preco > pers.dinheiro)
 		return false;
 
-	if(this.preco == 0)
+	if(this._preco == 0)
 		throw new Exception("Nao se pode comprar essa casa!");
 
-	pers.dinheiro -= this.preco;
+	pers.dinheiro -= this._preco;
 	this.indexDono = index;
 	return true;
 }

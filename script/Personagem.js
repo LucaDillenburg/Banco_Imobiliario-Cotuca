@@ -1,8 +1,8 @@
 function Personagem()
 {
-	this.presoSOI = 0;
+	this._presoSOI = 0;
 	this.felicidade = 100;
-	this.dinheiro = 30;
+	this._dinheiro = 30;
 	this.pos = 0;
 	this.vivo = true;
 }
@@ -11,7 +11,12 @@ function Personagem()
 //GETTERS AND SETTERS
 Personagem.prototype.getDinheiro = function()
 {
-	return parseFloat(this.dinheiro.toFixed(2));
+	return this._dinheiro.toFixed(2);
+}
+
+Personagem.prototype.getQtdRodadasFaltam = function()
+{
+	return this._presoSOI;
 }
 
 Personagem.NUMERO_TOTAL_CASAS = 17;
@@ -40,39 +45,39 @@ Personagem.prototype.mudarFelicidade = function(qtd)
 
 Personagem.prototype.mudarDinheiro = function(qtd)
 {
-	this.dinheiro += qtd;
+	this._dinheiro += qtd;
 
-	if(this.dinheiro < 0)
+	if(this._dinheiro < 0)
 		this.vivo = false;
 
-	return (this.dinheiro>=0);
+	return (this._dinheiro>=0);
 }
 
 
 //PRISAO
 Personagem.prototype.estahPreso = function()
 {
-	return (this.presoSOI > 0);
+	return (this._presoSOI > 0);
 }
 
 Personagem.prototype.prender = function()
 {
-	this.presoSOI = 3;
+	this._presoSOI = 3;
 }
 
 Personagem.prototype.soltarUsuario = function()
 {
-	this.presoSOI = 0;
+	this._presoSOI = 0;
 }
 
 Personagem.prototype.diminuirPrisao = function()
 {
-	this.presoSOI--;
+	this._presoSOI--;
 }
 
 
 //TESTE
-Personagem.prototype.printPers = function()
+Personagem.prototype._printPers = function()
 {
-	alert("Vida: "+this.vida+", Dinheiro: "+this.dinheiro);
+	alert("Vida: "+this.vida+", Dinheiro: "+this.getDinheiro());
 }

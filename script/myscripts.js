@@ -14,8 +14,19 @@
 		
 		this.tabuleiro = new Tabuleiro(4);
 		
-		this.colocarRodadaNaTela();
+		/*
+		var a = 5;
+		var b = 10.0;
+		var c = 7.00;
+		var d = 5.5;
+		var e = 5.50;
+		var f = 5.25;
+		var g = 5.256;
+		alert(a.toFixed(2) + ", " + b.toFixed(2) + ", " + c.toFixed(2) + ", " + d.toFixed(2) + ", " +
+			e.toFixed(2) + ", " + f.toFixed(2) + ", " + g.toFixed(2)); 
+		*/
 
+		this.colocarRodadaNaTela();
 		this.setInterval(this.aumentarContagemDado, 100);//tempoPorNumeroDado);
 	}
 
@@ -38,14 +49,10 @@
 		document.getElementById("dado").innerHTML = this.nDadoAtual;
 	}
 
-	function colocarDadosCasaAtualTela(casaAtual)
+	function colocarDadosCasaAtualTela(strCasaAtual)
 	{
 		//aqui (usar canvas)
-		var msg = "Casa atual: " + casaAtual.nomeLugar + 
-			"\n\nAluguel: R$" + casaAtual.getQtdDinheiroMuda() + 
-			"\nFelicidade: " + casaAtual.qtdFelicidadeMuda +
-			"\n\nPreço: R$" + casaAtual.getPreco();
-		alert(msg);
+		alert(strCasaAtual);
 	}
 
 	function colocarNotificacaoTela(notificacao)
@@ -54,10 +61,10 @@
 			notificacao.textoNotific + "\n";
 
 		if(notificacao.qtdFelicidadeMuda != 0)
-			msg += "\nFelicidade: " + notificacao.qtdFelicidadeMuda + "%";
+			msg += "\nFelicidade: " + Ajustar.IntegerComSinal(notificacao.qtdFelicidadeMuda) + "%";
 
-		if(notificacao.qtdDinheiroMuda != 0)
-			msg += "\nDinheiro: R$" + notificacao.getQtdDinheiroMuda();
+		if(notificacao._qtdDinheiroMuda != 0)
+			msg += "\nDinheiro: " + notificacao.getStrDinheiroQtdDinheiroMuda();
 
 		alert(msg);
 	}
@@ -69,7 +76,7 @@
 
 	function colocarPersDiminuiuTempoPrisaoTela()
 	{
-		alert("Você não conseguiu sair da prisão! Tente tirar 6 da próxima vez!\nRestam-se " + this.tabuleiro.getPersonagemAtual().presoSOI
+		alert("Você não conseguiu sair da prisão! Tente tirar 6 da próxima vez!\nRestam-se " + this.tabuleiro.getPersonagemAtual().getQtdRodadasFaltam()
 			+ " rodadas para você sair sem independente do número que você tirar...");
 	}
 
@@ -81,8 +88,8 @@
 			msg = acoesCasaAtual.textoNotific;
 		if(acoesCasaAtual.qtdFelicidadeMuda != 0)
 			msg += ((acoesCasaAtual.textoNotific != null) ? "\n\n" : "") +
-				"Felicidade: " + acoesCasaAtual.qtdFelicidadeMuda + "%";
-		if(acoesCasaAtual.qtdDinheiroMuda != 0)
+				"Felicidade: " + Ajustar.IntegerComSinal(acoesCasaAtual.qtdFelicidadeMuda) + "%";
+		if(acoesCasaAtual._qtdDinheiroMuda != 0)
 		{
 			if(acoesCasaAtual.textoNotific != null && acoesCasaAtual.qtdFelicidadeMuda == 0)
 				msg += "\n\n";
@@ -90,7 +97,7 @@
 			if(acoesCasaAtual.qtdFelicidadeMuda != 0)
 				msg += "\n";
 
-			msg += "Dinheiro: R$" + acoesCasaAtual.getQtdDinheiroMuda();
+			msg += "Dinheiro: " + acoesCasaAtual.getStrDinheiroQtdDinheiroMuda();
 		}
 		alert(msg);
 	}
@@ -158,23 +165,20 @@
 		let nDado = this.nDadoAtual;
 		this.nDadoAtual = -1;
 
-		//aqui
-		nDado = 5;
-
 		var result = this.tabuleiro.procPersGirouDado(nDado);
 		/*
-			result[0] //resultado da execucao (0: execucao normal; -1: personagem morreu; 
-						1: personagem saiu da prisao; 2: usuario teve prisao diminuida)
-		    result[1] //acoesCasaAtual (notificacao ou soh oq aconteceu com o personagem naquela casa)
-		    result[2] //casa atual
-		    result[3] //notificacao ou nao
+		result[0] //resultado da execucao (0: execucao normal; -1: personagem morreu; 
+					1: personagem saiu da prisao; 2: personagem teve prisao diminuida)
+	    result[1] //acoesCasaAtual (notificacao ou soh oq aconteceu com o personagem naquela casa)
+	    result[2] //string para mostrar ao usuario sobre casa atual
+		result[3] //ehNotificacao (boolean)
 		*/
 
 		document.getElementById("dado").style.visibility = "hidden";
 
 		//mostrar opcoes da casa em que caiu
-		var casaAtual = result[2];
-		this.colocarDadosCasaAtualTela(casaAtual);
+		var strCasaAtual = result[2];
+		this.colocarDadosCasaAtualTela(strCasaAtual);
 
 		var acoesCasaAtual = result[1];
 		var resultadoExecucao = result[0];
@@ -249,11 +253,29 @@
 
 	function comprarCasa()
 	{
-		if(this.etapa == 3 && this.tabuleiro.persConsegueComprarCasa())
+		if(this.etapa == 3 && this.tabuleiro.personagemConsegueComprarCasa())
 		{
 			var nome = this.tabuleiro.persComprarCasa();
 			alert("Você comprou " + nome + "!");
 		}
 		
 		document.getElementById("btnComprarCasa").style.visibility = "hidden";
+	}
+
+
+	//classe pra ajudar 
+	class Ajustar
+	{
+		static IntegerComSinal(n)
+		{
+			if(n > 0)
+			    return "+" + n;
+			else
+			    return n.toString();
+  		}
+
+  		static FloatToMoney(n)
+  		{
+  			return Math.floor(Math.abs(n) * 100) * (n < 0 ? -1 : 1) / 100;
+  		}
 	}

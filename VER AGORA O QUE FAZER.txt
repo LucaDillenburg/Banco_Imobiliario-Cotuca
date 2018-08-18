@@ -1,7 +1,12 @@
-quando for mostrar felicade ou preco e for: +20% ao inves de soh 20% 
-(no procedimento main do tabuleiro, retornar a string q vai colocar na tela ao inves da casa em si... prestar atencao se eh o inicio, ou o especial q faz X*aluguel)
+mudar tudo para px e nao %
 
 function no tabuleiro q devolve um vetor com as posicoes (x, y) que cada personagem deve estar
 se personagem morrer, essa posicao do vetor deve ser nula
 
-colocar R$4.00 ao inves de R$4
+mudar classes (class ou function, const, get)
+
+
+
+colocar R$4.00 ao inves de R$4. OK
+
+quando for mostrar felicade ou preco e for: +20% ao inves de soh 20%. OK
