@@ -105,9 +105,16 @@
 		let msg = "";
 		if(acoesCasaAtual.textoNotific != null)
 			msg = acoesCasaAtual.textoNotific;
+
 		if(acoesCasaAtual.qtdFelicidadeMuda != 0)
-			msg += ((acoesCasaAtual.textoNotific != null) ? "\n\n" : "") +
-				"Felicidade: " + Ajustar.IntegerComSinal(acoesCasaAtual.qtdFelicidadeMuda) + "%";
+		{
+			msg += ((acoesCasaAtual.textoNotific != null) ? "\n\n" : "");
+			if(acoesCasaAtual.qtdFelicidadeMuda == 100)
+				msg += "Felicidade = 100%";
+			else
+				msg += "Felicidade: " + Ajustar.IntegerComSinal(acoesCasaAtual.qtdFelicidadeMuda) + "%";
+		}
+
 		if(acoesCasaAtual._qtdDinheiroMuda != 0)
 		{
 			if(acoesCasaAtual.textoNotific != null && acoesCasaAtual.qtdFelicidadeMuda == 0)
@@ -201,7 +208,7 @@
 
 	function pararDado()
 	{
-		let nDado = 17;// nDadoAtual;
+		let nDado = nDadoAtual;
 		nDadoAtual = -1;
 
 		var result = tabuleiro.procPersGirouDado(nDado);
@@ -209,23 +216,25 @@
 			result[0] //resultado da execucao (0: execucao normal; -1: personagem morreu;
 					1: personagem saiu da prisao; 2: personagem teve prisao diminuida)
 	  	result[1] //acoesCasaAtual (notificacao ou soh oq aconteceu com o personagem naquela casa)
-	  	result[2] //string para mostrar ao usuario sobre casa atual
-			result[3] //ehNotificacao (boolean)
-			result[4] //(x,y) dos personagens
+			result[2] //ehNotificacao (boolean)
+			result[3] //str deu volta
 		*/
 
-		colocarPeoesNaTela(result[4]);
+		colocarPeoesNaTela(tabuleiro.vetorLocationPersonagens());
 
 		document.getElementById("dado").style.visibility = "hidden";
 
 		//mostrar opcoes da casa em que caiu
-		strCasaAtual = result[2];
+		strCasaAtual = tabuleiro.strCasaParaUsuario();
 		colocarDadosCasaAtualTela();
 
 		var acoesCasaAtual = result[1];
 		var resultadoExecucao = result[0];
 
-		if(result[3])
+		if(result[3] != null && result[3] != "")
+			alert(result[3]);
+
+		if(result[2])
 		//se caiu em "notificacoes"
 		{
 			colocarNotificacaoTela(acoesCasaAtual);

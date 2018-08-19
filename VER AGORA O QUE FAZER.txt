@@ -1,19 +1,5 @@
-arrumar (x,y) das casas
-
-algum erro quando vai dar a volta
-
-colocar todos os personagens no tabuleiro sempre, e colocar sempre a imagem de fundo por baixo
-
 colocar label do lado direito embaixo com todos as informacoes dos personagens (dinheiro, felicidade, posses/propriedades)
-
-FAZER CANVAS (myscript)
- - como nao deixar embacado?
 
 mudar classes (class ou function, const, get)
 
-
-
-function no tabuleiro q devolve um vetor com as posicoes (x, y) que cada personagem deve estar
-se personagem morrer, essa posicao do vetor deve ser nula. OK
-
-se usuário cai em uma casa normal que nao tem dono, ele nao perde dinheiro. OK
+deixar procedimento main melhor e quando cair na portaria ou férias (ver alert). OK

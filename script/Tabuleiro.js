@@ -15,7 +15,7 @@ function Tabuleiro(qtdPers = 4)
 			 			xEsquerda + widthCasa, 		yCima),
        2: new Casa("Tenda", 5.50, -0.50, 0,
 			 			xEsquerda + 2*widthCasa, 	yCima),
- 	     3: new Casa("Bandeco", 12.00, -3.00, 0,
+ 	     3: new Casa("Bandeco", 12.00, -3.00, -20,
 			 			xEsquerda + 3*widthCasa, 	yCima),
    		 4: new Casa("Ginásio", 5.00, -0.50, +10,
 			 			xEsquerda + 4*widthCasa, 	yCima),
@@ -102,11 +102,10 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 		result[0] //resultado da execucao (0: execucao normal; -1: personagem morreu;
 				1: personagem saiu da prisao; 2: personagem teve prisao diminuida)
   	result[1] //acoesCasaAtual (notificacao ou soh oq aconteceu com o personagem naquela casa)
-  	result[2] //string para mostrar ao usuario sobre casa atual
-		result[3] //ehNotificacao (boolean)
-		result[4] //(x,y) dos personagens
+		result[2] //ehNotificacao (boolean)
+		result[3] //str deu volta
 	*/
-	let result = new Array(5);
+	let result = new Array(4);
 
 	if(pers.estahPreso())
 	{
@@ -122,7 +121,7 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 		}
 
 		result[1] = null;
-		result[3] = false;
+		result[2] = false;
 	}else
 	{
 		this._mudarXOutrosPersMesmaCasa();
@@ -143,21 +142,21 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 				//fazer alteracoes no pers
 				notificacao.fazerAlteracoesPers(pers);
 				result[1] = notificacao;
-				result[3] = true; //eh notificacao
+				result[2] = true; //eh notificacao
 				break;
 			case _INDEX_SOI:
 				//nao estava preso antes
 				pers.prender();
 				result[1] = new Notificacao("Você foi preso! Para sair tire 6 no dado ou espere 3 rodadas!", 0, 0); //acoes usuario
-				result[3] = false; //nao eh notificacao
+				result[2] = false; //nao eh notificacao
 				break;
 			case 0:
-				result[1] = new Notificacao("", 0, 0); //acoes usuario
-				result[3] = false; //nao eh notificacao
+				result[1] = new Notificacao("De volta a casa de início...", 0, 0); //acoes usuario
+				result[2] = false; //nao eh notificacao
 				break;
 			case _INDEX_FERIAS:
 				result[1] = new Notificacao("Você está de férias! Recuperou toda a sua felicidade!", 0, 100); //acoes usuario
-				result[3] = false; //nao eh notificacao
+				result[2] = false; //nao eh notificacao
 				break;
 			default:
 				pers.mudarFelicidade(casaAtual.qtdFelicidadeMuda);
@@ -184,12 +183,15 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 				}else
 					result[1] = new Notificacao("Essa casa ainda é desabitada!", 0, casaAtual.qtdFelicidadeMuda);
 
-				result[3] = false;
+				result[2] = false;
 				break;
 		}
 
-		//aqui
-		//if(deuVolta)
+		if(deuVolta)
+		{
+			result[3] = "Você completou mais uma volta! Por isso, ganhou R$" + _QTD_DINHEIRO_POR_VOLTA.toFixed(2);
+			this.completouVolta(pers);
+		}
 
 		//personagem estah vivo ou morto (0 ou -1)
 		if(pers.vivo)
@@ -198,8 +200,6 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 			result[0] = -1;
 	}
 
-	result[2] = this._strCasaParaUsuario(this._casas[pers.pos], pers.pos);
-	result[4] = this.vetorLocationPersonagens();
 	return result;
 }
 
@@ -244,11 +244,17 @@ Tabuleiro.prototype._mudarXOutrosPersMesmaCasa = function()
 		}
 }
 
-Tabuleiro.prototype._strCasaParaUsuario = function(casaAtual, index)
+Tabuleiro.prototype.strCasaParaUsuario = function()
 {
+	return this._strCasaParaUsuario(this._personagens[this._indexPersonagemAtual].pos);
+}
+
+Tabuleiro.prototype._strCasaParaUsuario = function(indexCasa)
+{
+	let casaAtual = this._casas[indexCasa];
 	var msg = "<b>" + casaAtual.nomeLugar.toUpperCase() + "</b><i>";
 
-	switch (index)
+	switch (indexCasa)
 	{
 		case 0: //inicio
 			msg += "<br>Ganha R$3.00 por volta";
@@ -268,13 +274,13 @@ Tabuleiro.prototype._strCasaParaUsuario = function(casaAtual, index)
 			if(casaAtual._qtdDinheiroMuda < 0)
 			{
 				msg += "<br>Aluguel: R$" + casaAtual.getAluguel();
-				if(index == _INDEX_GRAFICA)
+				if(indexCasa == _INDEX_GRAFICA)
 					msg += " x (Número do dado)";
 			}else
 			if(casaAtual._qtdDinheiroMuda != 0)
 			{
 				msg += "<br>Ganha R$" + casaAtual.getQtdDinheiroMuda();
-				if(index == _INDEX_GRAFICA)
+				if(indexCasa == _INDEX_GRAFICA)
 					msg += " x (Número do dado)";
 			}
 
@@ -289,6 +295,12 @@ Tabuleiro.prototype._strCasaParaUsuario = function(casaAtual, index)
 
 	msg += "</i>";
 	return msg;
+}
+
+const _QTD_DINHEIRO_POR_VOLTA = 3.00;
+Tabuleiro.prototype.completouVolta = function(pers)
+{
+	pers.mudarDinheiro(_QTD_DINHEIRO_POR_VOLTA);
 }
 
 
