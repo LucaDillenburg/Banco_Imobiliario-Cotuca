@@ -1,14 +1,19 @@
-FAZER CANVAS (myscript)
+arrumar (x,y) das casas
 
-function no tabuleiro q devolve um vetor com as posicoes (x, y) que cada personagem deve estar
-se personagem morrer, essa posicao do vetor deve ser nula
+algum erro quando vai dar a volta
+
+colocar todos os personagens no tabuleiro sempre, e colocar sempre a imagem de fundo por baixo
+
+colocar label do lado direito embaixo com todos as informacoes dos personagens (dinheiro, felicidade, posses/propriedades)
+
+FAZER CANVAS (myscript)
+ - como nao deixar embacado?
 
 mudar classes (class ou function, const, get)
 
 
 
-mudar tudo para px e nao %. OK
+function no tabuleiro q devolve um vetor com as posicoes (x, y) que cada personagem deve estar
+se personagem morrer, essa posicao do vetor deve ser nula. OK
 
-colocar R$4.00 ao inves de R$4. OK
-
-quando for mostrar felicade ou preco e for: +20% ao inves de soh 20%. OK
+se usuário cai em uma casa normal que nao tem dono, ele nao perde dinheiro. OK

@@ -1,10 +1,12 @@
-function Personagem()
+function Personagem(x)
 {
 	this._presoSOI = 0;
 	this.felicidade = 100;
 	this._dinheiro = 30;
-	this.pos = 0;
+	this.pos = 0; //a casa em que ele se encontra
 	this.vivo = true;
+
+	this.x = x;
 }
 
 
@@ -19,7 +21,7 @@ Personagem.prototype.getQtdRodadasFaltam = function()
 	return this._presoSOI;
 }
 
-Personagem.NUMERO_TOTAL_CASAS = 17;
+const NUMERO_TOTAL_CASAS = 17;
 
 
 //MUDAR ATRIBUTOS COMUNS
@@ -27,8 +29,12 @@ Personagem.prototype.andarCasas = function(nCasas)
 {
 	this.pos += nCasas;
 
-	if(this.pos >= this.NUMERO_TOTAL_CASAS)
-		this.pos -= this.NUMERO_TOTAL_CASAS;
+	if(this.pos >= NUMERO_TOTAL_CASAS)
+	{
+		this.pos -= NUMERO_TOTAL_CASAS;
+		return true;
+	}
+	return false;
 }
 
 Personagem.prototype.mudarFelicidade = function(qtd)

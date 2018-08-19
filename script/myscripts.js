@@ -6,53 +6,72 @@
 	//2: mostrando informacoes casa
 	//3: pode comprar casa, alegria ou passar vez
 
+	//output
+	var objContexto;
+	//imagens
+	var imgPeoesPers;
+	var imgFundo = new Image();
+	imgFundo.src = "img/Tabuleiro Banco Imobiliário.png";
+
 	//INICIO
 	function iniciar()
 	{
-		objCanvas   = document.getElementById("meuCanvas");
-		objContexto = objCanvas.getContext("2d");
+		objContexto = document.getElementById("meuCanvas").getContext("2d");
 
-		this.tabuleiro = new Tabuleiro(4);
+		let qtdPers = 4;
+		tabuleiro = new Tabuleiro(qtdPers);
+		imgPeoesPers = new Array(qtdPers);
+		for (var i = 0; i < qtdPers; i++)
+		{
+			imgPeoesPers[i] = new Image();
 
-		/*
-		var a = 5;
-		var b = 10.0;
-		var c = 7.00;
-		var d = 5.5;
-		var e = 5.50;
-		var f = 5.25;
-		var g = 5.256;
-		alert(a.toFixed(2) + ", " + b.toFixed(2) + ", " + c.toFixed(2) + ", " + d.toFixed(2) + ", " +
-			e.toFixed(2) + ", " + f.toFixed(2) + ", " + g.toFixed(2));
-		*/
+			if(i == qtdPers-1)
+				imgPeoesPers[qtdPers-1].onload = function()
+				{
+					comecarJogo();
+				}
 
-		this.colocarRodadaNaTela();
-		this.setInterval(this.aumentarContagemDado, 100);//tempoPorNumeroDado);
+			imgPeoesPers[i].src = "img/peao" + (i + 1) + ".png";
+		}
 	}
 
+	function comecarJogo()
+	{
+		colocarPeoesNaTela(tabuleiro.vetorLocationPersonagens());
+		colocarRodadaNaTela();
+		setInterval(aumentarContagemDado, 70);
+	}
 
 	//TELA
 	function colocarRodadaNaTela()
 	{
-		this.etapa = 0;
+		etapa = 0;
 
-		//aqui
-		//colocar na tela: informacoes do usuario que vai jogar (usar canvas)
-		this.tabuleiro._teste();
+		//colocar na tela: informacoes do usuario que vai jogar
+		//tabuleiro._teste();
+		document.getElementById("informacoesPersCasa").innerHTML = tabuleiro.strPersonagemAtual();
 
 		//girar o dado depois de um tempo
-		setTimeout(this.comecarGirarDado, 500);
+		setTimeout(comecarGirarDado, 500);
+	}
+
+	function colocarPeoesNaTela(vetorXYPers)
+	{
+		objContexto.drawImage(imgFundo, 0, 0, 1088, 624); //300 -> 1088, 150 -> 624
+		for(let i = 0; i<vetorXYPers.length; i++)
+			if(vetorXYPers != null)
+				objContexto.drawImage(imgPeoesPers[i], vetorXYPers[i].x, vetorXYPers[i].y, 54.4, 62.4);
 	}
 
 	function colocarDadoAtualTela()
 	{
-		document.getElementById("dado").innerHTML = this.nDadoAtual;
+		document.getElementById("dado").innerHTML = nDadoAtual;
 	}
 
-	function colocarDadosCasaAtualTela(strCasaAtual)
+	var strCasaAtual;
+	function colocarDadosCasaAtualTela()
 	{
-		//aqui (usar canvas)
-		alert(strCasaAtual);
+		document.getElementById("informacoesPersCasa").innerHTML = this.tabuleiro.strPersonagemAtual() + "<br><br>" + strCasaAtual;
 	}
 
 	function colocarNotificacaoTela(notificacao)
@@ -76,7 +95,7 @@
 
 	function colocarPersDiminuiuTempoPrisaoTela()
 	{
-		alert("Você não conseguiu sair da prisão! Tente tirar 6 da próxima vez!\nRestam-se " + this.tabuleiro.getPersonagemAtual().getQtdRodadasFaltam()
+		alert("Você não conseguiu sair da prisão! Tente tirar 6 da próxima vez!\nRestam-se " + tabuleiro.getPersonagemAtual().getQtdRodadasFaltam()
 			+ " rodadas para você sair sem independente do número que você tirar...");
 	}
 
@@ -104,18 +123,38 @@
 
 	function colocarButtons()
 	{
-		this.etapa++; //this.etapa = 3;
+		etapa++; //etapa = 3;
 
 		document.getElementById("btnPassarJogada").style.visibility = "visible";
 
-		if(this.tabuleiro.personagemPodeComprarFelicidade())
+		let persConsegueComprarCasa = tabuleiro.personagemConsegueComprarCasa();
+		if(persConsegueComprarCasa)
 		{
-			document.getElementById("btnComprarFelicidade").style.visibility = "visible";
-			document.getElementById("lbComprarFelicidade").style.visibility = "visibility";
+			document.getElementById("btnComprarCasa").innerHTML = "<br>Comprar<br>" +
+				"(" + tabuleiro.getPrecoCasaPersAtual() + ")";
+			document.getElementById("btnComprarCasa").style.visibility = "visible";
 		}
 
-		if(this.tabuleiro.personagemConsegueComprarCasa())
-			document.getElementById("btnComprarCasa").style.visibility = "visible";
+		if(tabuleiro.personagemPodeComprarFelicidade())
+		{
+			let btnComprarFelicidade = document.getElementById("btnComprarFelicidade");
+			let lbComprarFelicidade = document.getElementById("lbComprarFelicidade");
+
+			if(persConsegueComprarCasa)
+			{
+				//deixar no lugar normal
+				btnComprarFelicidade.style.top = "309px";
+				lbComprarFelicidade.style.top = "369.2px";
+			}else
+			{
+				//deixar no lugar do btnComprarCasa
+				btnComprarFelicidade.style.top = "225px";
+				lbComprarFelicidade.style.top = "285.2px";
+			}
+
+			btnComprarFelicidade.style.visibility = "visible";
+			lbComprarFelicidade.style.visibility = "visible";
+		}
 	}
 
 
@@ -125,60 +164,63 @@
 	var firstClick = true;
 	function comecarGirarDado()
 	{
-		this.firstClick = true;
-		this.nDadoAtual = 1;
+		firstClick = true;
+		nDadoAtual = 1;
 		document.getElementById("dado").style.visibility = "visible";
 		document.getElementById("titleDado").style.visibility = "visible";
-		this.etapa++; //this.etapa = 1;
+		etapa++; //etapa = 1;
 	}
 
 	function aumentarContagemDado()
 	{
-		if(this.etapa == 1)
+		if(etapa == 1)
 		{
-			this.nDadoAtual++;
-			if(this.nDadoAtual > 6)
-				this.nDadoAtual = 1;
+			nDadoAtual++;
+			if(nDadoAtual > 6)
+				nDadoAtual = 1;
 
-			this.colocarDadoAtualTela();
+			colocarDadoAtualTela();
 		}
 	}
 
 	function clickCanvas()
 	{
-		if (this.etapa == 1 && this.firstClick) //se dado estah girando
+		if (etapa == 1 && firstClick) //se dado estah girando
 		{
-			this.firstClick = false; //continua girando o dado mas nao vai entrar aqui dnv
+			firstClick = false; //continua girando o dado mas nao vai entrar aqui dnv
 			document.getElementById("titleDado").style.visibility = "hidden";
-			setTimeout(this.auxPararDado, 225);
+			setTimeout(auxPararDado, 225);
 		}
 	}
 
 	function auxPararDado()
 	{
-		this.etapa++; //this.etapa = 2;
-		setTimeout(this.pararDado, 500); //dado fica parado no numero que tirou um tempo
+		etapa++; //etapa = 2;
+		setTimeout(pararDado, 500); //dado fica parado no numero que tirou um tempo
 	}
 
 	function pararDado()
 	{
-		let nDado = this.nDadoAtual;
-		this.nDadoAtual = -1;
+		let nDado = 17;// nDadoAtual;
+		nDadoAtual = -1;
 
-		var result = this.tabuleiro.procPersGirouDado(nDado);
+		var result = tabuleiro.procPersGirouDado(nDado);
 		/*
-		result[0] //resultado da execucao (0: execucao normal; -1: personagem morreu;
+			result[0] //resultado da execucao (0: execucao normal; -1: personagem morreu;
 					1: personagem saiu da prisao; 2: personagem teve prisao diminuida)
-	    result[1] //acoesCasaAtual (notificacao ou soh oq aconteceu com o personagem naquela casa)
-	    result[2] //string para mostrar ao usuario sobre casa atual
-		result[3] //ehNotificacao (boolean)
+	  	result[1] //acoesCasaAtual (notificacao ou soh oq aconteceu com o personagem naquela casa)
+	  	result[2] //string para mostrar ao usuario sobre casa atual
+			result[3] //ehNotificacao (boolean)
+			result[4] //(x,y) dos personagens
 		*/
+
+		colocarPeoesNaTela(result[4]);
 
 		document.getElementById("dado").style.visibility = "hidden";
 
 		//mostrar opcoes da casa em que caiu
-		var strCasaAtual = result[2];
-		this.colocarDadosCasaAtualTela(strCasaAtual);
+		strCasaAtual = result[2];
+		colocarDadosCasaAtualTela();
 
 		var acoesCasaAtual = result[1];
 		var resultadoExecucao = result[0];
@@ -186,76 +228,101 @@
 		if(result[3])
 		//se caiu em "notificacoes"
 		{
-			this.colocarNotificacaoTela(acoesCasaAtual);
+			colocarNotificacaoTela(acoesCasaAtual);
 
 			if(resultadoExecucao == -1)
 			//personagem morreu (nunca vai ser 2 ou 1, pois nao estava na prisao)
-				this.procPersMorreu();
+				procPersMorreu();
 		}else
 		{
 			switch(resultadoExecucao)
 			{
 				case 1:
-					this.colocarPersSaiuPrisaoTela(); //falar que pers saiu da prisao
+					colocarPersSaiuPrisaoTela(); //falar que pers saiu da prisao
 					break;
 				case 2:
-					this.colocarPersDiminuiuTempoPrisaoTela(); //falar que pers diminuiu prisao
+					colocarPersDiminuiuTempoPrisaoTela(); //falar que pers diminuiu prisao
 					break;
 				default:
 				//daqui pra baixo eh 0 ou -1
-					this.colocarOQueAconteceuPersTela(acoesCasaAtual);
+					colocarOQueAconteceuPersTela(acoesCasaAtual);
 
 					if(resultadoExecucao==-1)
-						this.procPersMorreu();
+						procPersMorreu();
 					break;
 			}
 
 		}
 
-		this.colocarButtons();
+		let indexGanhou = tabuleiro.indexPersonagemGanhou();
+		if(indexGanhou < 0) //se ninguem ganhou continua o jogo
+			colocarButtons();
+		else
+			procGanhou(indexGanhou);
 	}
 
 	function procPersMorreu()
 	{
-		alert("Você morreu!");
-		//aqui
-		//decidir o que vai fazer com as posses do morto (hipotecar uma por uma ateh ficar com dinheiro positivo dnv? simplesmente perder todas as propriedades)
+		document.getElementById("informacoesPersCasa").innerHTML = "<strike><b>Personagem " + tabuleiro.getIndexPersonagemAtual() + "</strike></b>" +
+			"<br><br>" + strCasaAtual;
+		alert("Você morreu!!\n\nTodos os seus bens serão devolvidos ao Estado e os outros jogadores poderão comprá-los...");
+	}
+
+	function procGanhou(indexGanhou)
+	{
+		alert("Personagem " + (indexGanhou + 1) + " ganhou o incrível Banco Imobiliário COTUCA!! Parabéns!");
+		document.location.reload(true);
 	}
 
 
 	//BUTTONS
 	function passarJogada()
 	{
-		if(this.etapa == 3)
+		if(etapa == 3)
 		{
-			this.tabuleiro.proximoPersonagem();
+			tabuleiro.proximoPersonagem();
 
 			document.getElementById("btnPassarJogada").style.visibility = "hidden";
 			document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
 			document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
 			document.getElementById("btnComprarCasa").style.visibility = "hidden";
 
-			this.colocarRodadaNaTela();
+			colocarRodadaNaTela();
 		}else
 			document.getElementById("btnPassarJogada").style.visibility = "hidden";
 	}
 
 	function comprarFelicidade()
 	{
-		var pers = this.tabuleiro.getPersonagemAtual();
-		if(this.etapa == 3 && this.tabuleiro.personagemPodeComprarFelicidade())
+		var pers = tabuleiro.getPersonagemAtual();
+		if(etapa == 3 && tabuleiro.personagemPodeComprarFelicidade())
 		{
-			this.tabuleiro.persComprarFelicidade();
+			tabuleiro.persComprarFelicidade();
+
+			//coloca na tela os valores diferentes do personagem
+			colocarDadosCasaAtualTela();
+
 			alert("Você comprou 20% de felicidade! A sua felicidade está com " + pers.felicidade + "%");
+
+			//se acabou o dinheiro ou felicidade = 100%, botao desaparece
+			if(!tabuleiro.personagemPodeComprarFelicidade())
+			{
+				document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
+				document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
+			}
 		}else
 			document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
 	}
 
 	function comprarCasa()
 	{
-		if(this.etapa == 3 && this.tabuleiro.personagemConsegueComprarCasa())
+		if(etapa == 3 && tabuleiro.personagemConsegueComprarCasa())
 		{
-			var nome = this.tabuleiro.persComprarCasa();
+			var nome = tabuleiro.persComprarCasa();
+
+			//coloca na tela os valores diferentes do personagem
+			colocarDadosCasaAtualTela();
+
 			alert("Você comprou " + nome + "!");
 		}
 

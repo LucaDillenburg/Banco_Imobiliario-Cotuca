@@ -1,4 +1,5 @@
- - Portaria (+$$, -vida) //se passar pela portaria ()
+IDEIA PARA CASAS
+ - Portaria (+$$, -vida) //se passar pela portaria
  - SOI/prisao (-vida)   //fica preso ateh 3 rodadas (cada rodada tem chance de "girar" o dado, se tirar 6)
  - Férias //vida = 100%
  - Notificações
@@ -24,17 +25,3 @@ notificacoes
  - nota alta
  - professor faltou: aula livre
  - professor está de perseguindo
-
-
-atributos do jogador: vida e felicidade
-
-opcao para comprar felicidade
-
-se vida chegar a zero ou dinheiro ter que ser menor que zero, usuario perde
-
-
-programacao:
- - fazer classe Jogador, Casa, Tabuleiro
- - canvas na tela inteira (no height pelo menos)
- - botao para parar dado
- - valores na tela do usuario (Dinheiro, Vida, Lugares comprados)

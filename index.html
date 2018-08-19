@@ -15,8 +15,11 @@
 </head>
 <body onload="iniciar()" onclick="clickCanvas()">
 	<h1 onclick="clickCanvas()"><center><u>Banco Imobiliario COTUCA</u></center></h1>
-	<canvas id="meuCanvas" onclick="clickCanvas()"></canvas>
-	
+
+	<canvas id="meuCanvas" width="1088" height="624"  onclick="clickCanvas()"></canvas>
+
+	<label id="informacoesPersCasa"></label>
+
 	<div id="divTitleDado" class="centralize"><label id="titleDado" onclick="clickCanvas()">Clique na tela para parar o dado:</label></div>
 	<div id="divDado" class="centralize"><div id="dado" class="card-panel teal lighten-2" onclick="clickCanvas()">1</div></div>
 
@@ -24,6 +27,6 @@
 	<a id="btnComprarFelicidade" onclick="comprarFelicidade()" class="waves-effect waves-light btn-large">+ Felicidade</a>
 	<span id="lbComprarFelicidade"><i>Compre 20% de felicidade por R$10,00</i></span>
 
-	<a id="btnComprarCasa" onclick="comprarCasa()" class="waves-effect waves-light btn-large">Comprar casa</a>
+	<a id="btnComprarCasa" onclick="comprarCasa()" class="waves-effect waves-light btn-large">Comprar</a>
 </body>
 </html>

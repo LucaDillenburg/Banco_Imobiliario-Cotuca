@@ -7,15 +7,6 @@ body
 	width: 1583px;
 }
 
-#meuCanvas
-{
-	height: 620px;
-	width: 100%;
-	background-image: url("../img/Tabuleiro Banco Imobiliário.png");
-	background-repeat: no-repeat;
-	background-position: center;
-}
-
 h1
 {
 	font-size: 50px;
@@ -23,45 +14,34 @@ h1
 
 
 
-/*BUTTONS*/
-#btnPassarJogada,
-#btnComprarFelicidade,
-#btnComprarCasa,
-#lbComprarFelicidade
+/**/
+/*ESQUERDA: label informacoes com personagens e da casa*/
+#informacoesPersCasa
 {
 	position: absolute;
-	visibility: hidden;
-	width: 177px;
-	left: 1372px;
-}
-
-#btnPassarJogada
-{
-	top: 172px;
-	background-color: #1565c0;
-}
-
-#btnComprarFelicidade
-{
-	top: 258px;
-	background-color: #1b5e20;
-}
-
-#lbComprarFelicidade
-{
-	top: 318.2px;
 	color: white;
+	font-size: 25px;
+
+	top: 137px;
+	left: 17px;
+	width: 225px;
+
+	word-wrap:  break-word;
 }
 
-#btnComprarCasa
+
+/**/
+/*CENTRO*/
+#meuCanvas
 {
-	top: 430px;
-	background-color: #d50000;
+	margin-left: 250px;
+	/* background-image: url("../img/Tabuleiro Banco Imobiliário.png");
+	background-repeat: no-repeat;
+	background-position: center;*/
 }
 
 
-
-/*OUTROS*/
+/*DADOS*/
 #titleDado,
 #dado
 {
@@ -107,4 +87,46 @@ h1
 	height: 370px;
 
 	text-align: center;
+}
+
+
+
+/**/
+/*DIREITA: BUTTONS*/
+#btnPassarJogada,
+#btnComprarFelicidade,
+#btnComprarCasa,
+#lbComprarFelicidade
+{
+	position: absolute;
+	visibility: hidden;
+	width: 177px;
+	left: 1372px;
+}
+
+#btnPassarJogada
+{
+	top: 145px;
+	background-color: #1565c0;
+}
+
+#btnComprarCasa
+{
+	top: 225px;
+	background-color: #d50000;
+	line-height: 1;
+	height: 58px;
+}
+
+#btnComprarFelicidade
+{
+	top: 309px;
+	background-color: #1b5e20;
+}
+
+#lbComprarFelicidade
+{
+	top: 369.2px;
+	color: white;
+	margin-left: +4px;
 }

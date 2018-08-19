@@ -1,3 +1,16 @@
 BANCO IMOBILIÁRIO
  - menu com "Banco Imobiliário" + opções de quantos jogadores + valores para cada um iniciar
  - colocar imagem na tela inteira um canvas (colocar banco imobiliário atrás, onde os piões estao, onde casas estão, "dado" como do mário world, opcao para comprar e colocar casa no terreno)
+
+
+
+MINHA IDEIA:
+ - atributos do jogador: vida e felicidade
+ - opcao para comprar felicidade e casa
+ - se vida chegar a zero ou dinheiro ter que ser menor que zero, usuario perde
+
+programacao:
+ - fazer classe Jogador, Casa, Tabuleiro
+ - canvas na tela inteira (no height pelo menos)
+ - botao para parar dado
+ - valores na tela do usuario (Dinheiro, Vida, Lugares comprados)
