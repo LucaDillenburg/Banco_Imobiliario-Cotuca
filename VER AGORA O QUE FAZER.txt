@@ -1,5 +1,9 @@
-colocar label do lado direito embaixo com todos as informacoes dos personagens (dinheiro, felicidade, posses/propriedades)
-
 mudar classes (class ou function, const, get)
 
-deixar procedimento main melhor e quando cair na portaria ou férias (ver alert). OK
+colocar label do lado direito embaixo com todos as informacoes dos personagens (dinheiro, felicidade, posses/propriedades). OK
+
+qnd compra casa e pode comprar felicidade, subir btn e label. OK
+
+quando usuario esquecer RA, ir para o SOE. OK
+
+Adicionar notificacao: "Iuri colocou um bloco na sua mochila". OK

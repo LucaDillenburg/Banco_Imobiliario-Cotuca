@@ -1,32 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Banco Imobiliário Cotuca</title>
+	<title>Banco Imobiliário (Escolha número de personagens)</title>
+
 	<meta charset="utf-8">
-	<!-- SCRIPTS -->
-	<script src="script/myscripts.js"></script>
-	<script src="script/Tabuleiro.js"></script>
-	<script src="script/Casa.js"></script>
-	<script src="script/Personagem.js"></script>
-	<script src="script/Notificacao.js"></script>
-	<!-- STYLE -->
-	<link rel="stylesheet" type="text/css" href="style/mystyle.css">
+
 	<link rel="stylesheet" type="text/css" href="style/materialize/css/materialize.min.css">
+	<style type="text/css">
+		body
+		{
+			background-image: url("img/backgroundAleatorio1.jpeg");
+			background-repeat: no-repeat;
+			background-size: cover;
+		}
+
+		#div p
+		{
+			font-size: 20px;
+		}
+
+		#div p label span
+		{
+			font-size: 30px;
+			color: black;
+		}
+	</style>
+	
+	<script type="text/javascript">
+		var nJogadores = 4;
+
+		function mudarNJogador(v)
+		{
+			nJogadores = v.value;
+		}
+
+		function btnJogar_Click()
+		{
+			window.location = "jogo.html?nJogadores=" + nJogadores;
+		}
+	</script>
 </head>
-<body onload="iniciar()" onclick="clickCanvas()">
-	<h1 onclick="clickCanvas()"><center><u>Banco Imobiliario COTUCA</u></center></h1>
+<body>
+	<center>
+	<b><h1>Banco Imobiliário - COTUCA</h1></b>
 
-	<canvas id="meuCanvas" width="1088" height="624"  onclick="clickCanvas()"></canvas>
+	<div id="div">
+    <p>
+      <label>
+        <input onclick="mudarNJogador(this)" id="nJogadores" value="2" class="with-gap" name="group1" type="radio" />
+        <span>2 Jogadores</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input onclick="mudarNJogador(this)" id="nJogadores" value="3" class="with-gap" name="group1" type="radio"  />
+        <span>3 Jogadores</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input onclick="mudarNJogador(this)" id="nJogadores" value="4" class="with-gap" name="group1" type="radio" checked />
+        <span>4 Jogadores</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input onclick="mudarNJogador(this)" id="nJogadores" value="5" class="with-gap" name="group1" type="radio"  />
+        <span>5 Jogadores</span>
+      </label>
+    </p>
+    </div>
 
-	<label id="informacoesPersCasa"></label>
+    <br>
+  	<a onclick="btnJogar_Click()" class="waves-effect waves-light btn-large">Jogar</a> 
 
-	<div id="divTitleDado" class="centralize"><label id="titleDado" onclick="clickCanvas()">Clique na tela para parar o dado:</label></div>
-	<div id="divDado" class="centralize"><div id="dado" class="card-panel teal lighten-2" onclick="clickCanvas()">1</div></div>
-
-	<a id="btnPassarJogada" onclick="passarJogada()" class="waves-effect waves-light btn-large">Passar jogada</a>
-	<a id="btnComprarFelicidade" onclick="comprarFelicidade()" class="waves-effect waves-light btn-large">+ Felicidade</a>
-	<span id="lbComprarFelicidade"><i>Compre 20% de felicidade por R$10,00</i></span>
-
-	<a id="btnComprarCasa" onclick="comprarCasa()" class="waves-effect waves-light btn-large">Comprar</a>
+  </center>
 </body>
 </html>

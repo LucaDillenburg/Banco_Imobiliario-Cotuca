@@ -93,6 +93,11 @@ h1
 
 /**/
 /*DIREITA: BUTTONS*/
+#divDireita
+{
+	margin-left: 1372px;
+}
+
 #btnPassarJogada,
 #btnComprarFelicidade,
 #btnComprarCasa,
@@ -101,7 +106,6 @@ h1
 	position: absolute;
 	visibility: hidden;
 	width: 177px;
-	left: 1372px;
 }
 
 #btnPassarJogada
@@ -129,4 +133,15 @@ h1
 	top: 369.2px;
 	color: white;
 	margin-left: +4px;
+}
+
+#lbInfoTodosPers
+{
+	position: absolute;
+	color: white;
+	font-size: 15px;
+
+	margin-left: -23px;
+	width: 240px;
+	top: 600px;
 }

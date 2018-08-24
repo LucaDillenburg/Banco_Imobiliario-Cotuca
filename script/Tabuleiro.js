@@ -1,5 +1,7 @@
 function Tabuleiro(qtdPers = 4)
 {
+	pxlsCadaPers = 149.6/qtdPers;
+
 	//y
 	let yCima = 66.5;
 	let heightCasaDir = 162;
@@ -25,8 +27,8 @@ function Tabuleiro(qtdPers = 4)
 			 			xEsquerda + 5*widthCasa, 	yCima + heightCasaDir + 4),
    		 7: new Casa("Salas", 6.00, -0.75, -30,
 			 			xEsquerda + 5*widthCasa, 	yCima + 2*heightCasaDir + 25),
-   		 8: new Casa("SOI", 0, 0, 0,
-				 		xEsquerda + 5*widthCasa, 	yCima + 3*heightCasaDir), //SOI
+   		 8: new Casa("SOE", 0, 0, 0,
+				 		xEsquerda + 5*widthCasa, 	yCima + 3*heightCasaDir), //SOE
    		 9: new Casa("Caminho das Árvores", 5.00, -0.50, 0,
 			 			xEsquerda + 4*widthCasa,	yCima + 3*heightCasaDir),
    		10: new Casa("Gráfica", 10.00, -1.25, 0,
@@ -47,49 +49,72 @@ function Tabuleiro(qtdPers = 4)
 	this._qtdCasas = 17;
 
   this._notificacoes = [
-    				new Notificacao("Você esqueceu seu RA! Tome mais cuidado da próxima vez...",
-    					0, -20),
-    				new Notificacao("Um professor faltou! Você sabe o que isso significa: aula livre!",
-    					0, +20),
-    				new Notificacao("Você foi mal numa prova que estava confiante... Que pena, esteja mais atento na próxima prova!",
-    					0, -20),
-    				new Notificacao("Você foi bem numa prova que achou que tinha ido mal... Que sortudo...",
-    					0, +20),
-    				new Notificacao("Você achou uma nota no chão!",
-    					+10, +20),
-    				new Notificacao("Você perdeu aquele dinheiro que tinha separado pro lanche! Agora vai ficar com fome e sem seu dinheiro...",
-    					-4, -20),
-    				new Notificacao("Hoje você vai ter aula com aquele professor que te odeia por nenhuma razão...",
-    					0, -20),
-    				new Notificacao("Seu amigo comprou um salgado na cantina pra você! Valorize amigos assim!",
-    					0, +20),
-    				new Notificacao("Seu ônibus atrasou! Agora você vai ter que pegar um uber...",
-    					-10, -20),
-    				new Notificacao("Vai ter futebol na aula de educação física!",
-    					0, +20),
-    				new Notificacao("Você pegou trânsito e não pôde entrar na primeira aula!",
-    					0, -20),
-						new Notificacao("Um professor elogiou seu comportamento na classe.",
-    					0, +20),
- 						new Notificacao("Prova surpresa! Ferrou!! Você só durmiu nas aulas desse professor!!",
-    					0, -40),
- 						new Notificacao("Você está muito cansado e já estudou muito hoje... por isso, merece um chocolate, certo?",
-    					-3, +20)
-				];
+		new Notificacao("Você esqueceu seu RA! Dê uma passada lá no SOE como castigo. Tome mais cuidado da próxima vez...",
+			0, -20),
+		new Notificacao("Um professor faltou! Você sabe o que isso significa: aula livre!",
+			0, +20),
+		new Notificacao("Você foi mal numa prova que estava confiante... Que pena, esteja mais atento na próxima prova!",
+			0, -20),
+		new Notificacao("Você foi bem numa prova que achou que tinha ido mal... Que sortudo...",
+			0, +20),
+		new Notificacao("Você achou uma nota no chão!",
+			+10, +20),
+		new Notificacao("Você perdeu aquele dinheiro que tinha separado pro lanche! Agora vai ficar com fome e sem seu dinheiro...",
+			-4, -20),
+		new Notificacao("Hoje você vai ter aula com aquele professor que te odeia por nenhuma razão...",
+			0, -20),
+		new Notificacao("Seu amigo comprou um salgado na cantina pra você! Valorize amigos assim!",
+			0, +20),
+		new Notificacao("Seu ônibus atrasou! Agora você vai ter que pegar um uber...",
+			-10, -20),
+		new Notificacao("Vai ter futebol na aula de educação física!",
+			0, +20),
+		new Notificacao("Você pegou trânsito e não pôde entrar na primeira aula!",
+			0, -20),
+			new Notificacao("Um professor elogiou seu comportamento na classe.",
+			0, +20),
+				new Notificacao("Prova surpresa! Ferrou!! Você só durmiu nas aulas desse professor!!",
+			0, -40),
+				new Notificacao("Você está muito cansado e já estudou muito hoje... por isso, merece um chocolate, certo?",
+			-3, +20),
+				new Notificacao("Iuri colocou um bloco na sua mochila :(", 0, -20)
+	];
 
   this._indexPersonagemAtual = 0;
 	this._personagens = new Array(qtdPers);
 	for (let i = 0; i < qtdPers; i++)
 	{
-		this._personagens[i] = new Personagem(xEsquerda);
-		this._personagens[i].x += i*pxlsCadaPers;
+		let corPers;
+		switch (i)
+		{
+			case 0:
+				corPers = "black";
+				break;
+			case 1:
+				corPers = "red";
+				break;
+			case 2:
+				corPers = "green";
+				break;
+			case 3:
+				corPers = "yellow";
+				break;
+			case 4: 
+				corPers = "brown";
+				break;
+		}
+
+		this._personagens[i] = new Personagem(xEsquerda + i*pxlsCadaPers, corPers);
 	}
 }
 
+//notificacao
+const _INDEX_NOTIFIC_SOE = 0;
+
 //CASAS ESPECIAIS
-//quando cair nos especiais, fazer coisas diferentes (notificação, SOI, Gráfica)
+//quando cair nos especiais, fazer coisas diferentes (notificação, SOE, Gráfica)
 const _INDEX_NOTIFICACAO = 5;
-const _INDEX_SOI = 8;
+const _INDEX_SOE = 8;
 const _INDEX_GRAFICA = 10;
 //outros
 const _INDEX_FERIAS = 13;
@@ -143,8 +168,13 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 				notificacao.fazerAlteracoesPers(pers);
 				result[1] = notificacao;
 				result[2] = true; //eh notificacao
+				if(indexNotific == _INDEX_NOTIFIC_SOE)
+				{
+					pers.prender();
+					pers.pos = _INDEX_SOE;
+				}
 				break;
-			case _INDEX_SOI:
+			case _INDEX_SOE:
 				//nao estava preso antes
 				pers.prender();
 				result[1] = new Notificacao("Você foi preso! Para sair tire 6 no dado ou espere 3 rodadas!", 0, 0); //acoes usuario
@@ -175,7 +205,7 @@ Tabuleiro.prototype.procPersGirouDado = function(nDado)
 						pers.mudarDinheiro(qtdDinheiroMuda);
 
 						result[1] = new Notificacao("Você caiu na casa do Personagem" + (casaAtual.indexDono+1) +
-							"... Então ele é quem vai receber todo o seu dinheiro!", qtdDinheiroMuda, casaAtual.qtdFelicidadeMuda);
+							"... Então ele vai receber parte do seu dinheiro!", qtdDinheiroMuda, casaAtual.qtdFelicidadeMuda);
 
 						this._personagens[casaAtual.indexDono].mudarDinheiro(-qtdDinheiroMuda);
 						//personagem que tem a casa ganha dinheiro
@@ -217,7 +247,7 @@ Tabuleiro.prototype.vetorLocationPersonagens = function()
 	return vetorXYPers;
 }
 
-const pxlsCadaPers = 37.4;
+Tabuleiro.prototype.pxlsCadaPers;
 Tabuleiro.prototype._mudarXPers = function(pers)
 {
 	//funcao muda o personagem.X baseado na casa que ele esta e quantas pessoas jah estao naquela casa
@@ -263,7 +293,7 @@ Tabuleiro.prototype._strCasaParaUsuario = function(indexCasa)
 			msg += "<br>Você recebe uma notificação de algo que aconteceu naquele dia, " +
 				"que vai fazer você perder ou ganhar dinheiro e/ou felicidade.";
 			break;
-		case _INDEX_SOI:
+		case _INDEX_SOE:
 			msg += "<br>Você é preso, pode ficar no máximo 3 rodadas, " +
 				"porém se você conseguir tirar 6 no dado antes, você está livre.";
 			break;
@@ -308,9 +338,40 @@ Tabuleiro.prototype.completouVolta = function(pers)
 Tabuleiro.prototype.strPersonagemAtual = function()
 {
 	var pers = this._personagens[this._indexPersonagemAtual];
-	return "<b>Personagem " + (this._indexPersonagemAtual+1) + "</b><br>" +
+	let msg = "<b style=\"color:" + pers.cor + "\">";
+	if(!pers.vivo)
+		return "<strike>" + msg + "Personagem " + (this._indexPersonagemAtual+1) + "</strike></b>";
+	return msg + "Personagem " + (this._indexPersonagemAtual+1) + "</b><br>" +
 		"<i>Dinheiro: R$" + pers.getDinheiro() + "<br>" +
 		"Felicidade: " + pers.felicidade + "%</i>";
+}
+
+Tabuleiro.prototype.strTodosPersonagens = function()
+{
+	var msg = "";
+
+	for (let i = 0; i<this._personagens.length; i++)
+	{
+		var pers = this._personagens[i];
+		let strPersAtual = "";
+		let strBold = "<b style=\"color:" + pers.cor + "\">";
+
+		if(!pers.vivo)
+			strPersAtual += "<strike>" + strBold + "Personagem " + (i+1) + "</strike></b>";
+		else
+		{
+			let strPropriedades = "";
+			for (let iProp = 0; i<pers.propriedades.length; i++)
+				strPropriedades += pers.propriedades[i] + (i==pers.propriedades.length-1?"":", ");
+
+			strPersAtual += strBold + "Personagem " + (i+1) + "</b> " +
+				"<i>(R$" + pers.getDinheiro() + ", " + "" + pers.felicidade + "%)</i>" + (strPropriedades==""?"":(": " + strPropriedades));
+		}
+
+		msg += strPersAtual + "<br>";
+	}
+
+	return msg;
 }
 
 Tabuleiro.prototype.proximoPersonagem = function()
@@ -348,6 +409,7 @@ Tabuleiro.prototype.procPersonagemAtualMorreu = function()
 	pers.felicidade = 0;
 
 	//doar todos os bens (casas) ao governo
+	pers.tirarTodasPropriedades();
 	for (let i = 0; i<this._qtdCasas; i++)
 		if(this._casas[i].indexDono == this._indexPersonagemAtual)
 			this._casas[i].indexDono = -1;
@@ -355,13 +417,13 @@ Tabuleiro.prototype.procPersonagemAtualMorreu = function()
 
 
 //buttons felicidade e casa
-const _qtdFelicidadeCompraFelicidade = 20;
-const _qtdDinheiroCompraFelicidade = -10;
+const _QTD_FELICIDADE_COMPRA_POR_VEZ = 20;
+const _QTD_DINHEIRO_COMPRAR_FELICIDADE = 10;
 Tabuleiro.prototype.persComprarFelicidade = function()
 {
 	var pers = this._personagens[this._indexPersonagemAtual];
-	pers.mudarFelicidade(_qtdFelicidadeCompraFelicidade);
-	pers.mudarDinheiro(_qtdDinheiroCompraFelicidade);
+	pers.mudarFelicidade(_QTD_FELICIDADE_COMPRA_POR_VEZ);
+	pers.mudarDinheiro(-_QTD_DINHEIRO_COMPRAR_FELICIDADE);
 }
 
 Tabuleiro.prototype.persComprarCasa = function()
@@ -381,7 +443,7 @@ Tabuleiro.prototype.personagemConsegueComprarCasa = function()
 
 	let pos = pers.pos;
 	//se casa eh especial e nao pode ser comprada
-	if (pos == 0 || pos == _INDEX_NOTIFICACAO || pos == _INDEX_SOI || pos == _INDEX_FERIAS)
+	if (pos == 0 || pos == _INDEX_NOTIFICACAO || pos == _INDEX_SOE || pos == _INDEX_FERIAS)
 		return false;
 
 	//se casa tem ou nao dono
@@ -394,7 +456,7 @@ Tabuleiro.prototype.personagemPodeComprarFelicidade = function()
 	var pers = this._personagens[this._indexPersonagemAtual];
 	if(!pers.vivo)
 		return false;
-	return (pers.felicidade < 100 && pers._dinheiro >= _qtdDinheiroCompraFelicidade);
+	return (pers.felicidade < 100 && pers._dinheiro >= _QTD_DINHEIRO_COMPRAR_FELICIDADE);
 }
 
 
@@ -412,16 +474,4 @@ Tabuleiro.prototype.getIndexPersonagemAtual = function()
 Tabuleiro.prototype.getPersonagemAtual = function()
 {
 	return this._personagens[this._indexPersonagemAtual];
-}
-
-
-//TESTE
-Tabuleiro.prototype._teste = function()
-{
-	let msg = "";
-	for(let i = 0; i<this._personagens.length; i++)
-		msg += "Personagem " + (i+1) + ": {Casa: " + this._personagens[i].pos + ", Dinheiro: " + this._personagens[i].getDinheiro()
-			+ ", Felicidade: " + this._personagens[i].felicidade + ", Rodadas preso: " + this._personagens[i]._presoSOI + "} \n";
-
-	alert(msg);
 }

@@ -18,7 +18,7 @@
 	{
 		objContexto = document.getElementById("meuCanvas").getContext("2d");
 
-		let qtdPers = 4;
+		let qtdPers = getQtdPersonagens();
 		tabuleiro = new Tabuleiro(qtdPers);
 		imgPeoesPers = new Array(qtdPers);
 		for (var i = 0; i < qtdPers; i++)
@@ -35,6 +35,16 @@
 		}
 	}
 
+	function getQtdPersonagens()
+	{
+		var loc = location.search;
+		var ret = loc.substring(loc.indexOf("?nJogadores=") + 12, loc.length);
+
+		if(ret < 2 || ret > 5)
+			window.location = "index.html";
+		return ret;
+	}
+
 	function comecarJogo()
 	{
 		colocarPeoesNaTela(tabuleiro.vetorLocationPersonagens());
@@ -48,8 +58,8 @@
 		etapa = 0;
 
 		//colocar na tela: informacoes do usuario que vai jogar
-		//tabuleiro._teste();
 		document.getElementById("informacoesPersCasa").innerHTML = tabuleiro.strPersonagemAtual();
+		colocarStrTodosPersTela();
 
 		//girar o dado depois de um tempo
 		setTimeout(comecarGirarDado, 500);
@@ -59,7 +69,7 @@
 	{
 		objContexto.drawImage(imgFundo, 0, 0, 1088, 624); //300 -> 1088, 150 -> 624
 		for(let i = 0; i<vetorXYPers.length; i++)
-			if(vetorXYPers != null)
+			if(vetorXYPers[i] != null)
 				objContexto.drawImage(imgPeoesPers[i], vetorXYPers[i].x, vetorXYPers[i].y, 54.4, 62.4);
 	}
 
@@ -71,7 +81,15 @@
 	var strCasaAtual;
 	function colocarDadosCasaAtualTela()
 	{
-		document.getElementById("informacoesPersCasa").innerHTML = this.tabuleiro.strPersonagemAtual() + "<br><br>" + strCasaAtual;
+		document.getElementById("informacoesPersCasa").innerHTML = tabuleiro.strPersonagemAtual() + "<br><br>" + strCasaAtual;
+		colocarStrTodosPersTela();
+	}
+
+	function colocarStrTodosPersTela()
+	{
+		var lbInfoTodosPers = document.getElementById("lbInfoTodosPers");
+		lbInfoTodosPers.innerHTML = tabuleiro.strTodosPersonagens();
+		lbInfoTodosPers.style.top = (760 - lbInfoTodosPers.offsetHeight) + "px";
 	}
 
 	function colocarNotificacaoTela(notificacao)
@@ -153,15 +171,18 @@
 				btnComprarFelicidade.style.top = "309px";
 				lbComprarFelicidade.style.top = "369.2px";
 			}else
-			{
-				//deixar no lugar do btnComprarCasa
-				btnComprarFelicidade.style.top = "225px";
-				lbComprarFelicidade.style.top = "285.2px";
-			}
+				btnElbFelicidadeEmCima();
 
 			btnComprarFelicidade.style.visibility = "visible";
 			lbComprarFelicidade.style.visibility = "visible";
 		}
+	}
+
+	function btnElbFelicidadeEmCima()
+	{
+		//deixar no lugar do btnComprarCasa
+		document.getElementById("btnComprarFelicidade").style.top = "225px";
+		document.getElementById("lbComprarFelicidade").style.top = "285.2px";
 	}
 
 
@@ -272,8 +293,7 @@
 
 	function procPersMorreu()
 	{
-		document.getElementById("informacoesPersCasa").innerHTML = "<strike><b>Personagem " + tabuleiro.getIndexPersonagemAtual() + "</strike></b>" +
-			"<br><br>" + strCasaAtual;
+		colocarDadosCasaAtualTela();
 		alert("Você morreu!!\n\nTodos os seus bens serão devolvidos ao Estado e os outros jogadores poderão comprá-los...");
 	}
 
@@ -336,6 +356,9 @@
 		}
 
 		document.getElementById("btnComprarCasa").style.visibility = "hidden";
+
+		if(document.getElementById("btnComprarFelicidade").style.visibility == "visible")
+			btnElbFelicidadeEmCima();
 	}
 
 

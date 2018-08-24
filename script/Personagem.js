@@ -1,4 +1,4 @@
-function Personagem(x)
+function Personagem(x, cor)
 {
 	this._presoSOI = 0;
 	this.felicidade = 100;
@@ -7,6 +7,23 @@ function Personagem(x)
 	this.vivo = true;
 
 	this.x = x;
+
+	this.cor = cor;
+
+	this.propriedades = new Array(0);
+}
+
+
+//PROPRIEDADES
+Personagem.prototype.adicionarCasaAPropriedades = function(nomeCasa)
+{
+	//aumenta vetor e adiciona na ultima posicao
+	this.propriedades[this.propriedades.length] = nomeCasa;
+}
+
+Personagem.prototype.tirarTodasPropriedades = function()
+{
+	this.propriedades = new Array(0);
 }
 
 
@@ -79,11 +96,4 @@ Personagem.prototype.soltarUsuario = function()
 Personagem.prototype.diminuirPrisao = function()
 {
 	this._presoSOI--;
-}
-
-
-//TESTE
-Personagem.prototype._printPers = function()
-{
-	alert("Vida: "+this.vida+", Dinheiro: "+this.getDinheiro());
 }

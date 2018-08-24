@@ -30,13 +30,14 @@ Casa.prototype.getPreco = function()
 
 Casa.prototype.comprar = function(pers, index)
 {
-	if (this._preco > pers.dinheiro)
-		return false;
-
 	if(this._preco == 0)
 		throw new Exception("Nao se pode comprar essa casa!");
 
+	if (pers.dinheiro < this._preco)
+		return false;
+
 	pers.mudarDinheiro(-this._preco);
+	pers.adicionarCasaAPropriedades(this.nomeLugar);
 	this.indexDono = index;
 	return true;
 }
