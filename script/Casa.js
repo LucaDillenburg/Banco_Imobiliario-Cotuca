@@ -19,7 +19,7 @@ Casa.prototype.getQtdDinheiroMuda = function()
 Casa.prototype.getAluguel = function()
 {
 	if(this._qtdDinheiroMuda > 0)
-		throw new Exception("Nao eh aluguel!");
+		throw "Nao eh aluguel!";
 	return (-this._qtdDinheiroMuda).toFixed(2);
 }
 
@@ -31,7 +31,7 @@ Casa.prototype.getPreco = function()
 Casa.prototype.comprar = function(pers, index)
 {
 	if(this._preco == 0)
-		throw new Exception("Nao se pode comprar essa casa!");
+		throw "Nao se pode comprar essa casa!";
 
 	if (pers.dinheiro < this._preco)
 		return false;

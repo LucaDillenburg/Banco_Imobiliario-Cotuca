@@ -1,10 +1,12 @@
-function Personagem(x, cor)
+function Personagem(x, cor, ehBot)
 {
 	this._presoSOI = 0;
 	this.felicidade = 100;
 	this._dinheiro = 30;
 	this.pos = 0; //a casa em que ele se encontra
 	this.vivo = true;
+
+	this.ehBot = ehBot;
 
 	this.x = x;
 

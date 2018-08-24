@@ -9,9 +9,29 @@ body
 
 h1
 {
-	font-size: 50px;
+	position: relative;
+	top: -10px;
+	color: black;
+	font-size: 150px;
 }
 
+
+/*div opacidade*/
+#divOpacidade
+{
+	visibility: hidden;
+
+	position: absolute;
+	z-index: 100;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	margin-top: 0px;
+	
+	background-color: black;
+
+	opacity: 0.6;
+}
 
 
 /**/
@@ -43,6 +63,7 @@ h1
 
 /*DADOS*/
 #titleDado,
+#titleDadoBot,
 #dado
 {
 	visibility: hidden;
@@ -50,7 +71,6 @@ h1
 
 .centralize
 {
-	/*margin: auto; centralize*/
 	margin-left: auto;
     margin-right: auto;
 
@@ -62,31 +82,57 @@ h1
 	width: 1190px;
 }
 
+#divTitleDadoBot
+{
+	width: 900px;
+}
+
+#titleDado,
+#titleDadoBot
+{
+	z-index: 101;
+	position: absolute;
+	font-size: 92px;
+	color: white;
+	top: 146px;
+}
+
+#titleDado
+{
+	background-color: #ff3d00;
+}
+
+#titleDadoBot
+{
+	background-color: #1E90FF; /*OU #00BFFF*/
+}
+
 #divDado
 {
 	width: 400px;
 }
 
-#titleDado
-{
-	position: absolute;
-	font-size: 92px;
-	color: white;
-	background-color: #ff3d00;
-	top: 160px;
-}
-
 #dado
 {
+	z-index: 102;
 	position: absolute;
-	font-size: 200px;
-	color: white;
-	background-color: #ff3d00;
+	background-color: white;
 	top: 300px;
 	width: 400px;
 	height: 370px;
 
+	border: 15px solid black;
+
 	text-align: center;
+}
+
+#lbDado
+{
+	position: absolute;
+	top: 6px;
+	left: 129px;
+	font-size: 220px;
+	color: black;
 }
 
 

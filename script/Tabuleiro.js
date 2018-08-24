@@ -1,6 +1,6 @@
-function Tabuleiro(qtdPers = 4)
+function Tabuleiro(qtdPers = 4, qtdPersCmBots = 4)
 {
-	pxlsCadaPers = 149.6/qtdPers;
+	pxlsCadaPers = 149.6/qtdPersCmBots;
 
 	//y
 	let yCima = 66.5;
@@ -43,7 +43,7 @@ function Tabuleiro(qtdPers = 4)
 						xEsquerda, 								yCima + 3*heightCasaEsq + 12.5),
    		15: new Casa("Cantina", 15.00, -4.00, +20,
 						xEsquerda, 								yCima + 2*heightCasaEsq),
-   		16: new Casa("Armário", 6.20, -1.00, 0,
+   		16: new Casa("Armário", 6.25, -1.00, 0,
 						xEsquerda, 								yCima + heightCasaEsq)
 		};
 	this._qtdCasas = 17;
@@ -81,8 +81,8 @@ function Tabuleiro(qtdPers = 4)
 	];
 
   this._indexPersonagemAtual = 0;
-	this._personagens = new Array(qtdPers);
-	for (let i = 0; i < qtdPers; i++)
+	this._personagens = new Array(qtdPersCmBots);
+	for (let i = 0; i < qtdPersCmBots; i++)
 	{
 		let corPers;
 		switch (i)
@@ -100,11 +100,11 @@ function Tabuleiro(qtdPers = 4)
 				corPers = "yellow";
 				break;
 			case 4: 
-				corPers = "brown";
+				corPers = "peru";
 				break;
 		}
 
-		this._personagens[i] = new Personagem(xEsquerda + i*pxlsCadaPers, corPers);
+		this._personagens[i] = new Personagem(xEsquerda + i*pxlsCadaPers, corPers, i >= qtdPers);
 	}
 }
 
@@ -361,8 +361,8 @@ Tabuleiro.prototype.strTodosPersonagens = function()
 		else
 		{
 			let strPropriedades = "";
-			for (let iProp = 0; i<pers.propriedades.length; i++)
-				strPropriedades += pers.propriedades[i] + (i==pers.propriedades.length-1?"":", ");
+			for (let iProp = 0; iProp<pers.propriedades.length; iProp++)
+				strPropriedades += pers.propriedades[iProp] + (iProp==pers.propriedades.length-1?"":", ");
 
 			strPersAtual += strBold + "Personagem " + (i+1) + "</b> " +
 				"<i>(R$" + pers.getDinheiro() + ", " + "" + pers.felicidade + "%)</i>" + (strPropriedades==""?"":(": " + strPropriedades));
@@ -460,10 +460,43 @@ Tabuleiro.prototype.personagemPodeComprarFelicidade = function()
 }
 
 
+//BOT
+Tabuleiro.prototype.persAtualDeveComprarCasa = function()
+{
+	if(!this.personagemConsegueComprarCasa())
+		return false;
+
+	let pers = this._personagens[this._indexPersonagemAtual];
+	return pers._dinheiro > this._casas[pers.pos]._preco + 5;
+}
+
+Tabuleiro.prototype.persAtualDeveComprarFelicidade = function()
+{
+	if(!this.personagemPodeComprarFelicidade())
+		return false;
+
+	let pers = this._personagens[this._indexPersonagemAtual];
+	if(pers.felicidade > 50)
+		return (pers.felicidade < 70) && pers._dinheiro > _QTD_DINHEIRO_COMPRAR_FELICIDADE + 10;
+	return ((pers.felicidade >= 30) && pers._dinheiro > _QTD_DINHEIRO_COMPRAR_FELICIDADE + 5) ||
+		((pers.felicidade < 30) && pers._dinheiro > _QTD_DINHEIRO_COMPRAR_FELICIDADE + 3);
+}
+
+Tabuleiro.prototype.persAtualEhBot = function()
+{
+	return this._personagens[this._indexPersonagemAtual].ehBot;
+}
+
+
 //outros
 Tabuleiro.prototype.getPrecoCasaPersAtual = function()
 {
 	return "R$" + this._casas[this._personagens[this._indexPersonagemAtual].pos].getPreco();
+}
+
+Tabuleiro.prototype.getFelicidadePersAtual = function()
+{
+	return this._personagens[this._indexPersonagemAtual].felicidade + "%";
 }
 
 Tabuleiro.prototype.getIndexPersonagemAtual = function()

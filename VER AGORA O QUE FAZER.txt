@@ -1,3 +1,5 @@
+programar para comprar casas
+
 mudar classes (class ou function, const, get)
 
 colocar label do lado direito embaixo com todos as informacoes dos personagens (dinheiro, felicidade, posses/propriedades). OK

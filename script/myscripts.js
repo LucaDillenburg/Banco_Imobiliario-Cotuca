@@ -19,14 +19,16 @@
 		objContexto = document.getElementById("meuCanvas").getContext("2d");
 
 		let qtdPers = getQtdPersonagens();
-		tabuleiro = new Tabuleiro(qtdPers);
-		imgPeoesPers = new Array(qtdPers);
-		for (var i = 0; i < qtdPers; i++)
+		let qtdNBots = getNBots(qtdPers);
+
+		tabuleiro = new Tabuleiro(qtdPers, qtdPers + qtdNBots);
+		imgPeoesPers = new Array(qtdPers + qtdNBots);
+		for (var i = 0; i < imgPeoesPers.length; i++)
 		{
 			imgPeoesPers[i] = new Image();
 
-			if(i == qtdPers-1)
-				imgPeoesPers[qtdPers-1].onload = function()
+			if(i == qtdPers + qtdNBots -1)
+				imgPeoesPers[qtdPers + qtdNBots -1].onload = function()
 				{
 					comecarJogo();
 				}
@@ -37,11 +39,41 @@
 
 	function getQtdPersonagens()
 	{
-		var loc = location.search;
-		var ret = loc.substring(loc.indexOf("?nJogadores=") + 12, loc.length);
+		try
+		{
+			var loc = location.search;
+			var indexNJogadores = loc.indexOf("?nJogadores=");
+			if(indexNJogadores < 0)
+				throw "";
+			var indexNBot = loc.indexOf("&nBots=", indexNJogadores + 13);
+			if(indexNBot < 0)
+				throw "";
+			var ret = parseInt(loc.substring(indexNJogadores + 12, indexNBot));
 
-		if(ret < 2 || ret > 5)
+			if(ret < 1 || ret > 5)
+				throw "";
+		}catch(err)
+		{
 			window.location = "index.html";
+		}
+		
+		return ret;
+	}
+
+	function getNBots(qtdPers)
+	{
+		try
+		{
+			var loc = location.search;
+			var ret = parseInt(loc.substring(loc.indexOf("&nBots=") + 7, loc.length));
+
+			if(ret < 0 || ret + qtdPers > 5)
+				throw "";
+		}catch(err)
+		{
+			window.location = "index.html";
+		}
+		
 		return ret;
 	}
 
@@ -75,7 +107,7 @@
 
 	function colocarDadoAtualTela()
 	{
-		document.getElementById("dado").innerHTML = nDadoAtual;
+		document.getElementById("lbDado").innerHTML = nDadoAtual;
 	}
 
 	var strCasaAtual;
@@ -103,18 +135,18 @@
 		if(notificacao._qtdDinheiroMuda != 0)
 			msg += "\nDinheiro: " + notificacao.getStrDinheiroQtdDinheiroMuda();
 
-		alert(msg);
+		alert(mudarMsgParaBotSePrecisar(msg));
 	}
 
 	function colocarPersSaiuPrisaoTela()
 	{
-		alert("Você saiu da prisão! Na próxima rodada você pode jogar como um homem livre!");
+		alert(mudarMsgParaBotSePrecisar("Você saiu da prisão! Na próxima rodada você pode jogar como um homem livre!"));
 	}
 
 	function colocarPersDiminuiuTempoPrisaoTela()
 	{
-		alert("Você não conseguiu sair da prisão! Tente tirar 6 da próxima vez!\nRestam-se " + tabuleiro.getPersonagemAtual().getQtdRodadasFaltam()
-			+ " rodadas para você sair sem independente do número que você tirar...");
+		alert(mudarMsgParaBotSePrecisar("Você não conseguiu sair da prisão! Tente tirar 6 da próxima vez!\nRestam-se " + tabuleiro.getPersonagemAtual().getQtdRodadasFaltam()
+			+ " rodadas para você sair sem independente do número que você tirar..."));
 	}
 
 	function colocarOQueAconteceuPersTela(acoesCasaAtual)
@@ -143,7 +175,45 @@
 
 			msg += "Dinheiro: " + acoesCasaAtual.getStrDinheiroQtdDinheiroMuda();
 		}
-		alert(msg);
+
+		alert(mudarMsgParaBotSePrecisar(msg));
+	}
+
+	function mudarMsgParaBotSePrecisar(msg)
+	{
+		return msg;
+
+		if(tabuleiro.persAtualEhBot())
+		{
+			msg = msg.replaceAll("você", "Personagem " + tabuleiro.getIndexPersonagemAtual());
+			msg = msg.replaceAll("Você", "Personagem " + tabuleiro.getIndexPersonagemAtual());
+			msg = msg.replaceAll("sua", "seu");
+			msg = msg.replaceAll("Sua", "Seu");
+			//trocar sua/seu/suas/seus por dele/dele/deles/deles
+			/*let index = 0;
+			while(index >= 0)
+			{
+				let auxIndexSeu = msg.indexOf("seu", index);
+				if(auxIndexSeu < 0)
+					auxIndexSeu = msg.length;
+				let auxIndexSua = msg.indexOf("sua", index);
+				if(auxIndexSua < 0)
+					auxIndexSua = msg.length;
+
+				if (auxIndexSeu >= msg.length - 3 && 
+					auxIndexSua >= msg.length - 3)
+					break;
+
+				if (auxIndexSeu < auxIndexSua)
+					index = auxIndexSeu;
+				else
+					index = auxIndexSua;
+
+				//"ola esse eh seu" ou "esse eh seu nome"
+			}*/
+		}
+
+		return msg;
 	}
 
 	function colocarButtons()
@@ -195,8 +265,17 @@
 		firstClick = true;
 		nDadoAtual = 1;
 		document.getElementById("dado").style.visibility = "visible";
-		document.getElementById("titleDado").style.visibility = "visible";
+
+		document.getElementById("divOpacidade").style.visibility = "visible";
+
+		if (tabuleiro.persAtualEhBot())
+			document.getElementById("titleDadoBot").style.visibility = "visible";
+		else
+			document.getElementById("titleDado").style.visibility = "visible";
 		etapa++; //etapa = 1;
+
+		if (tabuleiro.persAtualEhBot())
+			setTimeout(auxClickCanvas, Math.floor(Math.random()*1500) + 300);
 	}
 
 	function aumentarContagemDado()
@@ -213,12 +292,20 @@
 
 	function clickCanvas()
 	{
-		if (etapa == 1 && firstClick) //se dado estah girando
-		{
-			firstClick = false; //continua girando o dado mas nao vai entrar aqui dnv
+		if (etapa == 1 && firstClick && !tabuleiro.persAtualEhBot()) //se dado estah girando
+			auxClickCanvas();
+	}
+
+	function auxClickCanvas()
+	{
+		firstClick = false; //continua girando o dado mas nao vai entrar aqui dnv
+
+		if (tabuleiro.persAtualEhBot())
+			document.getElementById("titleDadoBot").style.visibility = "hidden";
+		else
 			document.getElementById("titleDado").style.visibility = "hidden";
-			setTimeout(auxPararDado, 225);
-		}
+
+		setTimeout(auxPararDado, Math.floor(Math.random()*200) + 150);
 	}
 
 	function auxPararDado()
@@ -244,6 +331,7 @@
 		colocarPeoesNaTela(tabuleiro.vetorLocationPersonagens());
 
 		document.getElementById("dado").style.visibility = "hidden";
+		document.getElementById("divOpacidade").style.visibility = "hidden";
 
 		//mostrar opcoes da casa em que caiu
 		strCasaAtual = tabuleiro.strCasaParaUsuario();
@@ -286,15 +374,32 @@
 
 		let indexGanhou = tabuleiro.indexPersonagemGanhou();
 		if(indexGanhou < 0) //se ninguem ganhou continua o jogo
-			colocarButtons();
+		{
+			if(!tabuleiro.persAtualEhBot())
+				colocarButtons();
+			else
+				setTimeout(jogarBot, 500);
+		}
 		else
 			procGanhou(indexGanhou);
+	}
+
+	function jogarBot()
+	{
+		//ver se bot vai comprar felicidade
+		if(tabuleiro.persAtualDeveComprarFelicidade())
+			comprarFelicidade();
+		//ver se bot vai comprar casa
+		if(tabuleiro.persAtualDeveComprarCasa())
+			comprarCasa();
+		//passar jogada
+		passarJogada();
 	}
 
 	function procPersMorreu()
 	{
 		colocarDadosCasaAtualTela();
-		alert("Você morreu!!\n\nTodos os seus bens serão devolvidos ao Estado e os outros jogadores poderão comprá-los...");
+		alert(mudarMsgParaBotSePrecisar("Você morreu!!\n\nTodos os seus bens serão devolvidos ao Estado e os outros jogadores poderão comprá-los..."));
 	}
 
 	function procGanhou(indexGanhou)
@@ -305,62 +410,107 @@
 
 
 	//BUTTONS
-	function passarJogada()
+	//passar jogada
+	function btnPassarJogada_Click()
 	{
-		if(etapa == 3)
+		if(etapa == 3 && !tabuleiro.persAtualEhBot())
+			passarJogada();
+		else
 		{
-			tabuleiro.proximoPersonagem();
-
+			alert("u idiot!");
 			document.getElementById("btnPassarJogada").style.visibility = "hidden";
-			document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
-			document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
-			document.getElementById("btnComprarCasa").style.visibility = "hidden";
-
-			colocarRodadaNaTela();
-		}else
-			document.getElementById("btnPassarJogada").style.visibility = "hidden";
+		}
 	}
 
-	function comprarFelicidade()
+	function passarJogada()
 	{
-		var pers = tabuleiro.getPersonagemAtual();
-		if(etapa == 3 && tabuleiro.personagemPodeComprarFelicidade())
+		tabuleiro.proximoPersonagem();
+
+		document.getElementById("btnPassarJogada").style.visibility = "hidden";
+		document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
+		document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
+		document.getElementById("btnComprarCasa").style.visibility = "hidden";
+
+		colocarRodadaNaTela();
+	}
+
+	//comprar casa
+	function btnComprarCasa_Click()
+	{
+		if(etapa == 3 && !tabuleiro.persAtualEhBot() && tabuleiro.personagemConsegueComprarCasa())
+			comprarCasa();
+		else
 		{
-			tabuleiro.persComprarFelicidade();
-
-			//coloca na tela os valores diferentes do personagem
-			colocarDadosCasaAtualTela();
-
-			alert("Você comprou 20% de felicidade! A sua felicidade está com " + pers.felicidade + "%");
-
-			//se acabou o dinheiro ou felicidade = 100%, botao desaparece
-			if(!tabuleiro.personagemPodeComprarFelicidade())
-			{
-				document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
-				document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
-			}
-		}else
-			document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
+			alert("u idiot!");
+			ajustarBtnsComprarCasa(false);
+		}
 	}
 
 	function comprarCasa()
 	{
-		if(etapa == 3 && tabuleiro.personagemConsegueComprarCasa())
-		{
-			var nome = tabuleiro.persComprarCasa();
+		var nome = tabuleiro.persComprarCasa();
 
-			//coloca na tela os valores diferentes do personagem
-			colocarDadosCasaAtualTela();
+		//coloca na tela os valores diferentes do personagem
+		colocarDadosCasaAtualTela();
 
-			alert("Você comprou " + nome + "!");
-		}
+		alert(mudarMsgParaBotSePrecisar("Você comprou " + nome + "!"));
 
+		ajustarBtnsComprarCasa(true);
+	}
+
+	function ajustarBtnsComprarCasa(comprou)
+	{
 		document.getElementById("btnComprarCasa").style.visibility = "hidden";
 
 		if(document.getElementById("btnComprarFelicidade").style.visibility == "visible")
-			btnElbFelicidadeEmCima();
+		{
+			if(!comprou || tabuleiro.personagemPodeComprarFelicidade())
+				btnElbFelicidadeEmCima();
+			else
+			{
+				//deixar no lugar do btnComprarCasa
+				document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
+				document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
+			}
+		}
 	}
 
+	//comprar felicidade
+	function btnComprarFelicidade_Click()
+	{
+		var pers = tabuleiro.getPersonagemAtual();
+		if(etapa == 3 && !tabuleiro.persAtualEhBot() && tabuleiro.personagemPodeComprarFelicidade())
+			comprarFelicidade();
+		else
+		{
+			alert("u idiot!");
+			document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
+		}
+	}
+
+	function comprarFelicidade()
+	{
+		tabuleiro.persComprarFelicidade();
+
+		//coloca na tela os valores diferentes do personagem
+		colocarDadosCasaAtualTela();
+
+		alert(mudarMsgParaBotSePrecisar("Você comprou 20% de felicidade! A sua felicidade está com " + tabuleiro.getFelicidadePersAtual()));
+
+		//se acabou o dinheiro ou felicidade = 100%, botao desaparece
+		if(!tabuleiro.personagemPodeComprarFelicidade())
+		{
+			document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
+			document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
+		}
+		//visibility of btnComprar casa (se podia comprar mas agora nao pode mais)
+		if(document.getElementById("btnComprarCasa").style.visibility == "visible" && 
+			!tabuleiro.personagemConsegueComprarCasa())
+		{
+			document.getElementById("btnComprarCasa").style.visibility = "hidden";
+			btnElbFelicidadeEmCima();
+		}
+	}
 
 	//classe pra ajudar
 	class Ajustar

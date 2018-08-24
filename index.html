@@ -27,16 +27,70 @@
 	</style>
 	
 	<script type="text/javascript">
-		var nJogadores = 4;
+		var nJogadores;
+
+		function lastNJogadores()
+		{
+			for (var i = 1; i <= 5; i++)
+				if(document.getElementById("nJogadores"+i).checked)
+					return i;
+			return 4;
+		}
 
 		function mudarNJogador(v)
 		{
 			nJogadores = v.value;
+
+			arrumarBotoes();
+		}
+
+		function arrumarBotoes()
+		{
+			if(nJogadores == 1)
+			{
+				document.getElementById("brBtnJogar").style.display = "none";
+				document.getElementById("btnJogar").style.display = "none";
+			}
+			else
+			{
+				document.getElementById("brBtnJogar").style.display = "inline-block";
+				document.getElementById("btnJogar").style.display = "inline-block";
+			}
+
+			if(nJogadores == 5)
+				document.getElementById("btnJogarComBots").style.display = "none";
+			else
+			{
+				document.getElementById("btnJogarComBots").innerHTML = "Preencher com " + (5 - nJogadores) + " Bot" + (nJogadores==4?"":"s") + " e jogar";
+				document.getElementById("btnJogarComBots").style.display = "inline-block";
+			}
 		}
 
 		function btnJogar_Click()
 		{
-			window.location = "jogo.html?nJogadores=" + nJogadores;
+			if(nJogadores == 1)
+			{
+				alert("u idiot");
+				document.getElementById("btnJogar").style.display = "none";
+			}
+
+			jogar(0);
+		}
+
+		function btnJogarComBots_Click()
+		{
+			if(nJogadores == 5)
+			{
+				alert("u idiot");
+				document.getElementById("btnJogarComBots").style.display = "none";
+			}
+
+			jogar(5 - nJogadores);
+		}
+
+		function jogar(qtdBots)
+		{
+			window.location = "jogo.html?nJogadores=" + nJogadores + "&nBots=" + qtdBots;
 		}
 	</script>
 </head>
@@ -45,35 +99,49 @@
 	<b><h1>Banco Imobiliário - COTUCA</h1></b>
 
 	<div id="div">
+	<p>
+      <label>
+        <input onclick="mudarNJogador(this)" id="nJogadores1" value="1" class="with-gap" name="group1" type="radio" />
+        <span>Single Player</span>
+      </label>
+    </p>
     <p>
       <label>
-        <input onclick="mudarNJogador(this)" id="nJogadores" value="2" class="with-gap" name="group1" type="radio" />
+        <input onclick="mudarNJogador(this)" id="nJogadores2" value="2" class="with-gap" name="group1" type="radio" />
         <span>2 Jogadores</span>
       </label>
     </p>
     <p>
       <label>
-        <input onclick="mudarNJogador(this)" id="nJogadores" value="3" class="with-gap" name="group1" type="radio"  />
+        <input onclick="mudarNJogador(this)" id="nJogadores3" value="3" class="with-gap" name="group1" type="radio"  />
         <span>3 Jogadores</span>
       </label>
     </p>
     <p>
       <label>
-        <input onclick="mudarNJogador(this)" id="nJogadores" value="4" class="with-gap" name="group1" type="radio" checked />
+        <input onclick="mudarNJogador(this)" id="nJogadores4" value="4" class="with-gap" name="group1" type="radio" checked />
         <span>4 Jogadores</span>
       </label>
     </p>
     <p>
       <label>
-        <input onclick="mudarNJogador(this)" id="nJogadores" value="5" class="with-gap" name="group1" type="radio"  />
+        <input onclick="mudarNJogador(this)" id="nJogadores5" value="5" class="with-gap" name="group1" type="radio"  />
         <span>5 Jogadores</span>
       </label>
     </p>
     </div>
 
     <br>
-  	<a onclick="btnJogar_Click()" class="waves-effect waves-light btn-large">Jogar</a> 
+  	<a id="btnJogar" onclick="btnJogar_Click()" class="waves-effect waves-light btn-large">Jogar (sem Bots)</a>
+  	<br id="brBtnJogar">
+  	<br>
+  	<a id="btnJogarComBots" onclick="btnJogarComBots_Click()" class="waves-effect waves-light btn-large">Preencher com 1 Bot e jogar</a>
 
+  	<script type="text/javascript">
+  		nJogadores = lastNJogadores();
+		document.getElementById("nJogadores"+nJogadores).checked = true;
+  		arrumarBotoes();
+  	</script>
   </center>
 </body>
 </html>
