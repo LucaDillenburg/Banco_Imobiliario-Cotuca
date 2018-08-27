@@ -27,7 +27,7 @@ h1
 	height: 100%;
 	top: 0px;
 	margin-top: 0px;
-	
+
 	background-color: black;
 
 	opacity: 0.6;
@@ -35,12 +35,12 @@ h1
 
 
 /**/
-/*ESQUERDA: label informacoes com personagens e da casa*/
-#informacoesPersCasa
+/*ESQUERDA: label informacoes com personagens e do terreno*/
+#informacoesPersTerreno
 {
 	position: absolute;
 	color: white;
-	font-size: 25px;
+	font-size: 22px;
 
 	top: 137px;
 	left: 17px;
@@ -142,52 +142,86 @@ h1
 #divDireita
 {
 	margin-left: 1372px;
+	margin-top: -625px;
 }
 
 #btnPassarJogada,
+
+#btnComprarTerreno,
+#lbComprarCasinha,
+
+#btnComprarCasinha,
+#lbComprarCasinha,
+
 #btnComprarFelicidade,
-#btnComprarCasa,
 #lbComprarFelicidade
 {
-	position: absolute;
-	visibility: hidden;
+	position: relative;
+	display: none;
 	width: 177px;
 }
 
 #btnPassarJogada
 {
-	top: 145px;
 	background-color: #1565c0;
 }
 
-#btnComprarCasa
+#btnComprarTerreno
 {
-	top: 225px;
+	padding: 11.5px 0; /*PARA CENTRALIZAR*/
+
+	margin-top: +25px;
 	background-color: #d50000;
-	line-height: 1;
+	line-height: 1.3;
 	height: 58px;
+}
+
+#lbDentroBtnComprarTerreno
+{
+	margin-top: 20px;
+	background-color: black;
+}
+
+#btnComprarCasinha
+{
+	margin-top: 25px;
+	font-size: 11px;
+	background-color: black;
+}
+
+#lbComprarCasinha
+{
+	margin-top: +5px;
+	margin-left: +4px;
 }
 
 #btnComprarFelicidade
 {
-	top: 309px;
+	margin-top: +25px;
 	background-color: #1b5e20;
 }
 
 #lbComprarFelicidade
 {
-	top: 369.2px;
-	color: white;
+	margin-top: +5px;
 	margin-left: +4px;
 }
+
+.explicacao
+{
+	color: white;
+	font-style: italic;
+}
+
+
 
 #lbInfoTodosPers
 {
 	position: absolute;
 	color: white;
-	font-size: 15px;
+	font-size: 18px;
 
-	margin-left: -23px;
-	width: 240px;
+	margin-left: 1349px;
+	width: 242px;
 	top: 600px;
 }

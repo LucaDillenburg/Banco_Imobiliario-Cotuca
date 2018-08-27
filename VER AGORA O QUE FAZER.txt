@@ -1,11 +1,26 @@
-programar para comprar casas
+OK:
+colocar imagem como atributo do personagem, e imagem do tabuleiro e da casa do do tabuleiro
 
-mudar classes (class ou function, const, get)
+colocar personagens na ordem certa na tela (colocar imagem do personagem como atributo do personagem). para colocar primeiro os mais de tras da msm casa e dp os mais da frente da msm casa
 
-colocar label do lado direito embaixo com todos as informacoes dos personagens (dinheiro, felicidade, posses/propriedades). OK
+colocar casinhas na tela, toda jogada depois de colocar os personagens (colocar um pouco mais pra esquerda que os personagens):
+ - fazer metodo tabuleiro.vetorLocationCasinhas()
+ - pegar imagem de casinha e adiciona-la a variavel imgCasinha
+ - colocar width e height da imagem no codigo
 
-qnd compra casa e pode comprar felicidade, subir btn e label. OK
+arrumar quando cai em ferias
+ver se bot deve comprar casa
 
-quando usuario esquecer RA, ir para o SOE. OK
+arrumar layout (aumentar tamanho lbInfoTodosPers, diminuir tamanho informacoes casa)
 
-Adicionar notificacao: "Iuri colocou um bloco na sua mochila". OK
+ver se estah colocando strTodosPers na tela depois de clicar em btns
+
+tabuleiro.perscomprarcasinha
+tabuleiro.procedimento para comprar casinha + click do botao do personagem comprar casa
+
+botao para comprar casinha
+
+mudar casa -> terreno
+mudar pers.pos -> indexTerrenoAtual
+
+(ps: quando usuario for morto tirar casas do terreno)

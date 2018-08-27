@@ -3,15 +3,11 @@
 	var etapa = 0;
 	//0: esperando pra colocar dado girando
 	//1: dado girando
-	//2: mostrando informacoes casa
-	//3: pode comprar casa, alegria ou passar vez
+	//2: mostrando informacoes terreno
+	//3: pode comprar terreno, alegria ou passar vez
 
 	//output
 	var objContexto;
-	//imagens
-	var imgPeoesPers;
-	var imgFundo = new Image();
-	imgFundo.src = "img/Tabuleiro Banco Imobiliário.png";
 
 	//INICIO
 	function iniciar()
@@ -22,19 +18,7 @@
 		let qtdNBots = getNBots(qtdPers);
 
 		tabuleiro = new Tabuleiro(qtdPers, qtdPers + qtdNBots);
-		imgPeoesPers = new Array(qtdPers + qtdNBots);
-		for (var i = 0; i < imgPeoesPers.length; i++)
-		{
-			imgPeoesPers[i] = new Image();
-
-			if(i == qtdPers + qtdNBots -1)
-				imgPeoesPers[qtdPers + qtdNBots -1].onload = function()
-				{
-					comecarJogo();
-				}
-
-			imgPeoesPers[i].src = "img/peao" + (i + 1) + ".png";
-		}
+		setTimeout(comecarJogo, 200);
 	}
 
 	function getQtdPersonagens()
@@ -56,7 +40,7 @@
 		{
 			window.location = "index.html";
 		}
-		
+
 		return ret;
 	}
 
@@ -73,13 +57,13 @@
 		{
 			window.location = "index.html";
 		}
-		
+
 		return ret;
 	}
 
 	function comecarJogo()
 	{
-		colocarPeoesNaTela(tabuleiro.vetorLocationPersonagens());
+		colocarPeoesECasinhasNaTela(true);
 		colocarRodadaNaTela();
 		setInterval(aumentarContagemDado, 70);
 	}
@@ -90,19 +74,32 @@
 		etapa = 0;
 
 		//colocar na tela: informacoes do usuario que vai jogar
-		document.getElementById("informacoesPersCasa").innerHTML = tabuleiro.strPersonagemAtual();
+		document.getElementById("informacoesPersTerreno").innerHTML = tabuleiro.strPersonagemAtual();
 		colocarStrTodosPersTela();
 
 		//girar o dado depois de um tempo
 		setTimeout(comecarGirarDado, 500);
 	}
 
-	function colocarPeoesNaTela(vetorXYPers)
+	function colocarPeoesECasinhasNaTela(first = false)
 	{
-		objContexto.drawImage(imgFundo, 0, 0, 1088, 624); //300 -> 1088, 150 -> 624
-		for(let i = 0; i<vetorXYPers.length; i++)
-			if(vetorXYPers[i] != null)
-				objContexto.drawImage(imgPeoesPers[i], vetorXYPers[i].x, vetorXYPers[i].y, 54.4, 62.4);
+		//tabuleiro (fundo)
+		objContexto.drawImage(tabuleiro.imgFundo, 0, 0, 1088, 624); //300 -> 1088, 150 -> 624
+
+		//personagens/peoes
+		let vetorXYPers = tabuleiro.vetorLocationPersonagens();
+		for(let i = vetorXYPers.length-1; i >= 0; i--)
+		{
+			let index = (tabuleiro.getIndexPersonagemAtual() - (first?1:0) + i) % vetorXYPers.length;
+			if(vetorXYPers[index] != null)
+				objContexto.drawImage(vetorXYPers[index].imgPeao, vetorXYPers[index].x, vetorXYPers[index].y, 50, 75);
+		}
+
+		//casinhas (o que compra quando tem toda uma rua)
+		let vetorXYCasinhas = tabuleiro.vetorLocationCasinhas();
+		for(let i = 0; i<vetorXYCasinhas.length; i++)
+			if(vetorXYCasinhas[i] != null)
+				objContexto.drawImage(tabuleiro.imgCasinha, vetorXYCasinhas[i].x, vetorXYCasinhas[i].y, 50, 40);
 	}
 
 	function colocarDadoAtualTela()
@@ -110,10 +107,10 @@
 		document.getElementById("lbDado").innerHTML = nDadoAtual;
 	}
 
-	var strCasaAtual;
-	function colocarDadosCasaAtualTela()
+	var strTerrenoAtual;
+	function colocarDadosTerrenoAtualTela()
 	{
-		document.getElementById("informacoesPersCasa").innerHTML = tabuleiro.strPersonagemAtual() + "<br><br>" + strCasaAtual;
+		document.getElementById("informacoesPersTerreno").innerHTML = tabuleiro.strPersonagemAtual() + "<br><br>" + strTerrenoAtual;
 		colocarStrTodosPersTela();
 	}
 
@@ -145,35 +142,40 @@
 
 	function colocarPersDiminuiuTempoPrisaoTela()
 	{
-		alert(mudarMsgParaBotSePrecisar("Você não conseguiu sair da prisão! Tente tirar 6 da próxima vez!\nRestam-se " + tabuleiro.getPersonagemAtual().getQtdRodadasFaltam()
-			+ " rodadas para você sair sem independente do número que você tirar..."));
+		let msg = "Você não conseguiu sair da prisão! Tente tirar 6 da próxima vez!\n";
+		let rodadasFaltam = tabuleiro.getPersonagemAtual().getQtdRodadasFaltam();
+		if(rodadasFaltam == 0)
+			msg += "Na próxima rodada você será um homem livre!";
+		else
+			msg += "Restam-se " + rodadasFaltam + " rodadas para você sair sem independente do número que você tirar...";
+		alert(mudarMsgParaBotSePrecisar(msg));
 	}
 
-	function colocarOQueAconteceuPersTela(acoesCasaAtual)
+	function colocarOQueAconteceuPersTela(acoesTerrenoAtual)
 	{
 		//falar o que aconteceu com usuario, perdeu ou ganhou felicidade
 		let msg = "";
-		if(acoesCasaAtual.textoNotific != null)
-			msg = acoesCasaAtual.textoNotific;
+		if(acoesTerrenoAtual.textoNotific != null)
+			msg = acoesTerrenoAtual.textoNotific;
 
-		if(acoesCasaAtual.qtdFelicidadeMuda != 0)
+		if(acoesTerrenoAtual.qtdFelicidadeMuda != 0)
 		{
-			msg += ((acoesCasaAtual.textoNotific != null) ? "\n\n" : "");
-			if(acoesCasaAtual.qtdFelicidadeMuda == 100)
+			msg += ((acoesTerrenoAtual.textoNotific != null) ? "\n\n" : "");
+			if(acoesTerrenoAtual.qtdFelicidadeMuda == 100)
 				msg += "Felicidade = 100%";
 			else
-				msg += "Felicidade: " + Ajustar.IntegerComSinal(acoesCasaAtual.qtdFelicidadeMuda) + "%";
+				msg += "Felicidade: " + Ajustar.IntegerComSinal(acoesTerrenoAtual.qtdFelicidadeMuda) + "%";
 		}
 
-		if(acoesCasaAtual._qtdDinheiroMuda != 0)
+		if(acoesTerrenoAtual._qtdDinheiroMuda != 0)
 		{
-			if(acoesCasaAtual.textoNotific != null && acoesCasaAtual.qtdFelicidadeMuda == 0)
+			if(acoesTerrenoAtual.textoNotific != null && acoesTerrenoAtual.qtdFelicidadeMuda == 0)
 				msg += "\n\n";
 			else
-			if(acoesCasaAtual.qtdFelicidadeMuda != 0)
+			if(acoesTerrenoAtual.qtdFelicidadeMuda != 0)
 				msg += "\n";
 
-			msg += "Dinheiro: " + acoesCasaAtual.getStrDinheiroQtdDinheiroMuda();
+			msg += "Dinheiro: " + acoesTerrenoAtual.getStrDinheiroQtdDinheiroMuda();
 		}
 
 		alert(mudarMsgParaBotSePrecisar(msg));
@@ -200,7 +202,7 @@
 				if(auxIndexSua < 0)
 					auxIndexSua = msg.length;
 
-				if (auxIndexSeu >= msg.length - 3 && 
+				if (auxIndexSeu >= msg.length - 3 &&
 					auxIndexSua >= msg.length - 3)
 					break;
 
@@ -220,39 +222,25 @@
 	{
 		etapa++; //etapa = 3;
 
-		document.getElementById("btnPassarJogada").style.visibility = "visible";
+		document.getElementById("btnPassarJogada").style.display = "inline-block";
 
-		let persConsegueComprarCasa = tabuleiro.personagemConsegueComprarCasa();
-		if(persConsegueComprarCasa)
+		if(tabuleiro.personagemConsegueComprarTerreno())
 		{
-			document.getElementById("btnComprarCasa").innerHTML = "<br>Comprar<br>" +
-				"(" + tabuleiro.getPrecoCasaPersAtual() + ")";
-			document.getElementById("btnComprarCasa").style.visibility = "visible";
+			document.getElementById("btnComprarTerreno").innerHTML = "Comprar<br>" +
+				"(" + tabuleiro.getPrecoTerrenoPersAtual() + ")";
+			document.getElementById("btnComprarTerreno").style.display = "inline-block";
+		}else
+		if (tabuleiro.persPodeComprarCasinha())
+		{
+			document.getElementById("btnComprarCasinha").style.display = "inline-block";
+			document.getElementById("lbComprarCasinha").style.display = "inline-block";
 		}
 
 		if(tabuleiro.personagemPodeComprarFelicidade())
 		{
-			let btnComprarFelicidade = document.getElementById("btnComprarFelicidade");
-			let lbComprarFelicidade = document.getElementById("lbComprarFelicidade");
-
-			if(persConsegueComprarCasa)
-			{
-				//deixar no lugar normal
-				btnComprarFelicidade.style.top = "309px";
-				lbComprarFelicidade.style.top = "369.2px";
-			}else
-				btnElbFelicidadeEmCima();
-
-			btnComprarFelicidade.style.visibility = "visible";
-			lbComprarFelicidade.style.visibility = "visible";
+			document.getElementById("btnComprarFelicidade").style.display = "inline-block";
+			document.getElementById("lbComprarFelicidade").style.display = "inline-block";
 		}
-	}
-
-	function btnElbFelicidadeEmCima()
-	{
-		//deixar no lugar do btnComprarCasa
-		document.getElementById("btnComprarFelicidade").style.top = "225px";
-		document.getElementById("lbComprarFelicidade").style.top = "285.2px";
 	}
 
 
@@ -323,21 +311,21 @@
 		/*
 			result[0] //resultado da execucao (0: execucao normal; -1: personagem morreu;
 					1: personagem saiu da prisao; 2: personagem teve prisao diminuida)
-	  	result[1] //acoesCasaAtual (notificacao ou soh oq aconteceu com o personagem naquela casa)
+	  	result[1] //acoesTerrenoAtual (notificacao ou soh oq aconteceu com o personagem naquele terreno)
 			result[2] //ehNotificacao (boolean)
 			result[3] //str deu volta
 		*/
 
-		colocarPeoesNaTela(tabuleiro.vetorLocationPersonagens());
+		colocarPeoesECasinhasNaTela();
 
 		document.getElementById("dado").style.visibility = "hidden";
 		document.getElementById("divOpacidade").style.visibility = "hidden";
 
-		//mostrar opcoes da casa em que caiu
-		strCasaAtual = tabuleiro.strCasaParaUsuario();
-		colocarDadosCasaAtualTela();
+		//mostrar opcoes do terreno em que caiu
+		strTerrenoAtual = tabuleiro.strTerrenoParaUsuario();
+		colocarDadosTerrenoAtualTela();
 
-		var acoesCasaAtual = result[1];
+		var acoesTerrenoAtual = result[1];
 		var resultadoExecucao = result[0];
 
 		if(result[3] != null && result[3] != "")
@@ -346,7 +334,7 @@
 		if(result[2])
 		//se caiu em "notificacoes"
 		{
-			colocarNotificacaoTela(acoesCasaAtual);
+			colocarNotificacaoTela(acoesTerrenoAtual);
 
 			if(resultadoExecucao == -1)
 			//personagem morreu (nunca vai ser 2 ou 1, pois nao estava na prisao)
@@ -363,7 +351,7 @@
 					break;
 				default:
 				//daqui pra baixo eh 0 ou -1
-					colocarOQueAconteceuPersTela(acoesCasaAtual);
+					colocarOQueAconteceuPersTela(acoesTerrenoAtual);
 
 					if(resultadoExecucao==-1)
 						procPersMorreu();
@@ -389,23 +377,35 @@
 		//ver se bot vai comprar felicidade
 		if(tabuleiro.persAtualDeveComprarFelicidade())
 			comprarFelicidade();
-		//ver se bot vai comprar casa
-		if(tabuleiro.persAtualDeveComprarCasa())
-			comprarCasa();
+
+		//ver se bot vai comprar terreno
+		while(true)
+		{
+			let indexComprarTerrenoOuCasa = tabuleiro.persAtualDeveComprarTerrenoOuCasinha();
+			if (indexComprarTerrenoOuCasa <= 0)
+				break;
+
+			if (indexComprarTerrenoOuCasa == 1)
+				comprarTerreno();
+			else
+				if (indexComprarTerrenoOuCasa == 2)
+					comprarCasinha();
+		}
+		
 		//passar jogada
 		passarJogada();
 	}
 
 	function procPersMorreu()
 	{
-		colocarDadosCasaAtualTela();
+		colocarDadosTerrenoAtualTela();
 		alert(mudarMsgParaBotSePrecisar("Você morreu!!\n\nTodos os seus bens serão devolvidos ao Estado e os outros jogadores poderão comprá-los..."));
 	}
 
 	function procGanhou(indexGanhou)
 	{
 		alert("Personagem " + (indexGanhou + 1) + " ganhou o incrível Banco Imobiliário COTUCA!! Parabéns!");
-		document.location.reload(true);
+		window.location = "index.html"; //document.location.reload(true);
 	}
 
 
@@ -418,7 +418,7 @@
 		else
 		{
 			alert("u idiot!");
-			document.getElementById("btnPassarJogada").style.visibility = "hidden";
+			document.getElementById("btnPassarJogada").style.display = "inline-block";
 		}
 	}
 
@@ -426,52 +426,98 @@
 	{
 		tabuleiro.proximoPersonagem();
 
-		document.getElementById("btnPassarJogada").style.visibility = "hidden";
-		document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
-		document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
-		document.getElementById("btnComprarCasa").style.visibility = "hidden";
-
+		document.getElementById("btnPassarJogada").style.display = "none";
+		document.getElementById("btnComprarTerreno").style.display = "none";
+		document.getElementById("btnComprarCasinha").style.display = "none";
+		document.getElementById("lbComprarCasinha").style.display = "none";
+		document.getElementById("btnComprarFelicidade").style.display = "none";
+		document.getElementById("lbComprarFelicidade").style.display = "none";
+		
 		colocarRodadaNaTela();
 	}
 
-	//comprar casa
-	function btnComprarCasa_Click()
+	//comprar terreno
+	function btnComprarTerreno_Click()
 	{
-		if(etapa == 3 && !tabuleiro.persAtualEhBot() && tabuleiro.personagemConsegueComprarCasa())
-			comprarCasa();
+		if(etapa == 3 && !tabuleiro.persAtualEhBot() && tabuleiro.personagemConsegueComprarTerreno())
+			comprarTerreno();
 		else
 		{
 			alert("u idiot!");
-			ajustarBtnsComprarCasa(false);
+			document.getElementById("btnComprarTerreno").style.display = "none";
 		}
 	}
 
-	function comprarCasa()
+	function comprarTerreno()
 	{
-		var nome = tabuleiro.persComprarCasa();
+		var nome = tabuleiro.persComprarTerreno();
 
 		//coloca na tela os valores diferentes do personagem
-		colocarDadosCasaAtualTela();
+		colocarDadosTerrenoAtualTela();
 
 		alert(mudarMsgParaBotSePrecisar("Você comprou " + nome + "!"));
 
-		ajustarBtnsComprarCasa(true);
+		//ajustar botoes (quais devem ficar visiveis e quais nao):
+		//btnComprarTerreno
+		document.getElementById("btnComprarTerreno").style.display = "none";
+		//se btnComprarCasinha pode aparecer na tela
+		if (tabuleiro.persPodeComprarCasinha())
+		{
+			document.getElementById("btnComprarCasinha").style.display = "inline-block";
+			document.getElementById("lbComprarCasinha").style.display = "inline-block";
+		}
+		//se btnComprarFelicidade esta aparecendo na tela
+		if(document.getElementById("btnComprarFelicidade").style.display != "none")
+		{
+			if(!tabuleiro.personagemPodeComprarFelicidade())
+			{
+				//deixar no lugar do btnComprarTerreno
+				document.getElementById("btnComprarFelicidade").style.display = "none";
+				document.getElementById("lbComprarFelicidade").style.display = "none";
+			}
+		}
 	}
 
-	function ajustarBtnsComprarCasa(comprou)
+	//comprar Casinha
+	function btnComprarCasinha_Click()
 	{
-		document.getElementById("btnComprarCasa").style.visibility = "hidden";
-
-		if(document.getElementById("btnComprarFelicidade").style.visibility == "visible")
+		if(etapa == 3 && !tabuleiro.persAtualEhBot() && tabuleiro.persPodeComprarCasinha())
+			comprarCasinha();
+		else
 		{
-			if(!comprou || tabuleiro.personagemPodeComprarFelicidade())
-				btnElbFelicidadeEmCima();
-			else
-			{
-				//deixar no lugar do btnComprarCasa
-				document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
-				document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
-			}
+			alert("u idiot!");
+			document.getElementById("btnComprarCasinha").style.display = "none";
+		}
+	}
+
+	function comprarCasinha()
+	{
+		let result = tabuleiro.persComprarCasinha();
+		let nomeTerreno = result[0];
+		let novoAluguel = result[1];
+
+		//coloca o tabuleiro de novo na tela (pois ha uma casinha nova)
+		colocarPeoesECasinhasNaTela();
+		//coloca na tela os valores diferentes do personagem
+		colocarDadosTerrenoAtualTela();
+
+		alert(mudarMsgParaBotSePrecisar("Você comprou uma casinha em " + nomeTerreno + "! Agora o aluguel para quem cair nesse terreno é de " + novoAluguel + "!"));
+
+		//se acabou o dinheiro ou jah esta no numero maximo de casinhas, botao desaparece
+		if(!tabuleiro.persPodeComprarCasinha())
+		{
+			document.getElementById("btnComprarCasinha").style.display = "none";
+			document.getElementById("lbComprarCasinha").style.display = "none";
+		}
+
+		//display do btnComprarTerreno (se podia comprar mas agora nao pode mais por falta de dinheiro)
+		//e do btnComprarCasinha:
+
+		//se btnComprarFelicidade estava na tela e mas agora nao ha mais dinheiro
+		if(document.getElementById("btnComprarFelicidade").style.display != "none" || !tabuleiro.personagemPodeComprarFelicidade())
+		{
+			document.getElementById("btnComprarCasinha").style.display = "inline-block";
+			document.getElementById("lbComprarCasinha").style.display = "inline-block";
 		}
 	}
 
@@ -484,7 +530,7 @@
 		else
 		{
 			alert("u idiot!");
-			document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
+			document.getElementById("btnComprarFelicidade").style.display = "none";
 		}
 	}
 
@@ -493,38 +539,30 @@
 		tabuleiro.persComprarFelicidade();
 
 		//coloca na tela os valores diferentes do personagem
-		colocarDadosCasaAtualTela();
+		colocarDadosTerrenoAtualTela();
 
 		alert(mudarMsgParaBotSePrecisar("Você comprou 20% de felicidade! A sua felicidade está com " + tabuleiro.getFelicidadePersAtual()));
 
 		//se acabou o dinheiro ou felicidade = 100%, botao desaparece
 		if(!tabuleiro.personagemPodeComprarFelicidade())
 		{
-			document.getElementById("btnComprarFelicidade").style.visibility = "hidden";
-			document.getElementById("lbComprarFelicidade").style.visibility = "hidden";
+			document.getElementById("btnComprarFelicidade").style.display = "none";
+			document.getElementById("lbComprarFelicidade").style.display = "none";
 		}
-		//visibility of btnComprar casa (se podia comprar mas agora nao pode mais)
-		if(document.getElementById("btnComprarCasa").style.visibility == "visible" && 
-			!tabuleiro.personagemConsegueComprarCasa())
-		{
-			document.getElementById("btnComprarCasa").style.visibility = "hidden";
-			btnElbFelicidadeEmCima();
-		}
-	}
 
-	//classe pra ajudar
-	class Ajustar
-	{
-		static IntegerComSinal(n)
-		{
-			if(n > 0)
-			    return "+" + n;
-			else
-			    return n.toString();
-  		}
+		//display do btnComprarTerreno (se podia comprar mas agora nao pode mais por falta de dinheiro)
+		//e do btnComprarCasinha:
 
-  		static FloatToMoney(n)
-  		{
-  			return Math.floor(Math.abs(n) * 100) * (n < 0 ? -1 : 1) / 100;
-  		}
+		//se btnComprarTerreno estava na tela mas agora nao ha mais dinheiro para tal
+		if(document.getElementById("btnComprarTerreno").style.display != "none")
+		{
+			if(!tabuleiro.personagemConsegueComprarTerreno())
+				document.getElementById("btnComprarTerreno").style.display = "none";
+		}else
+			//se btnComprarCasinha estava na tela mas agora nao ha mais dinheiro para tal
+			if(document.getElementById("btnComprarCasinha").style.display != "none" && !tabuleiro.persPodeComprarCasinha())
+			{
+				document.getElementById("btnComprarCasinha").style.display = "none";
+				document.getElementById("lbComprarCasinha").style.display = "none";
+			}
 	}

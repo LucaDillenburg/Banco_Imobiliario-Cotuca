@@ -1,9 +1,11 @@
-function Personagem(x, cor, ehBot)
+function Personagem(x, cor, ehBot, img)
 {
+	this.imgPeao = img;
+
 	this._presoSOI = 0;
 	this.felicidade = 100;
-	this._dinheiro = 30;
-	this.pos = 0; //a casa em que ele se encontra
+	this._dinheiro = 25;
+	this.indexTerrenoAtual = 0; //o terreno em que ele se encontra
 	this.vivo = true;
 
 	this.ehBot = ehBot;
@@ -17,10 +19,10 @@ function Personagem(x, cor, ehBot)
 
 
 //PROPRIEDADES
-Personagem.prototype.adicionarCasaAPropriedades = function(nomeCasa)
+Personagem.prototype.adicionarTerrenoAPropriedades = function(nomeTerreno)
 {
 	//aumenta vetor e adiciona na ultima posicao
-	this.propriedades[this.propriedades.length] = nomeCasa;
+	this.propriedades[this.propriedades.length] = nomeTerreno;
 }
 
 Personagem.prototype.tirarTodasPropriedades = function()
@@ -40,17 +42,17 @@ Personagem.prototype.getQtdRodadasFaltam = function()
 	return this._presoSOI;
 }
 
-const NUMERO_TOTAL_CASAS = 17;
+const NUMERO_TOTAL_TERRENOS = 17;
 
 
 //MUDAR ATRIBUTOS COMUNS
-Personagem.prototype.andarCasas = function(nCasas)
+Personagem.prototype.andarTerrenos = function(nTerrenos)
 {
-	this.pos += nCasas;
+	this.indexTerrenoAtual += nTerrenos;
 
-	if(this.pos >= NUMERO_TOTAL_CASAS)
+	if(this.indexTerrenoAtual >= NUMERO_TOTAL_TERRENOS)
 	{
-		this.pos -= NUMERO_TOTAL_CASAS;
+		this.indexTerrenoAtual -= NUMERO_TOTAL_TERRENOS;
 		return true;
 	}
 	return false;
