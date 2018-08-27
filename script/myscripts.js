@@ -185,7 +185,7 @@
 	{
 		return msg;
 
-		if(tabuleiro.persAtualEhBot())
+		if(tabuleiro.persEhBot())
 		{
 			msg = msg.replaceAll("você", "Personagem " + tabuleiro.getIndexPersonagemAtual());
 			msg = msg.replaceAll("Você", "Personagem " + tabuleiro.getIndexPersonagemAtual());
@@ -224,7 +224,7 @@
 
 		document.getElementById("btnPassarJogada").style.display = "inline-block";
 
-		if(tabuleiro.personagemConsegueComprarTerreno())
+		if(tabuleiro.persPodeComprarTerreno())
 		{
 			document.getElementById("btnComprarTerreno").innerHTML = "Comprar<br>" +
 				"(" + tabuleiro.getPrecoTerrenoPersAtual() + ")";
@@ -236,7 +236,7 @@
 			document.getElementById("lbComprarCasinha").style.display = "inline-block";
 		}
 
-		if(tabuleiro.personagemPodeComprarFelicidade())
+		if(tabuleiro.persPodeComprarFelicidade())
 		{
 			document.getElementById("btnComprarFelicidade").style.display = "inline-block";
 			document.getElementById("lbComprarFelicidade").style.display = "inline-block";
@@ -256,13 +256,13 @@
 
 		document.getElementById("divOpacidade").style.visibility = "visible";
 
-		if (tabuleiro.persAtualEhBot())
+		if (tabuleiro.persEhBot())
 			document.getElementById("titleDadoBot").style.visibility = "visible";
 		else
 			document.getElementById("titleDado").style.visibility = "visible";
 		etapa++; //etapa = 1;
 
-		if (tabuleiro.persAtualEhBot())
+		if (tabuleiro.persEhBot())
 			setTimeout(auxClickCanvas, Math.floor(Math.random()*1500) + 300);
 	}
 
@@ -280,7 +280,7 @@
 
 	function clickCanvas()
 	{
-		if (etapa == 1 && firstClick && !tabuleiro.persAtualEhBot()) //se dado estah girando
+		if (etapa == 1 && firstClick && !tabuleiro.persEhBot()) //se dado estah girando
 			auxClickCanvas();
 	}
 
@@ -288,7 +288,7 @@
 	{
 		firstClick = false; //continua girando o dado mas nao vai entrar aqui dnv
 
-		if (tabuleiro.persAtualEhBot())
+		if (tabuleiro.persEhBot())
 			document.getElementById("titleDadoBot").style.visibility = "hidden";
 		else
 			document.getElementById("titleDado").style.visibility = "hidden";
@@ -363,7 +363,7 @@
 		let indexGanhou = tabuleiro.indexPersonagemGanhou();
 		if(indexGanhou < 0) //se ninguem ganhou continua o jogo
 		{
-			if(!tabuleiro.persAtualEhBot())
+			if(!tabuleiro.persEhBot())
 				colocarButtons();
 			else
 				setTimeout(jogarBot, 500);
@@ -375,13 +375,13 @@
 	function jogarBot()
 	{
 		//ver se bot vai comprar felicidade
-		if(tabuleiro.persAtualDeveComprarFelicidade())
+		if(tabuleiro.persDeveComprarFelicidade())
 			comprarFelicidade();
 
 		//ver se bot vai comprar terreno
 		while(true)
 		{
-			let indexComprarTerrenoOuCasa = tabuleiro.persAtualDeveComprarTerrenoOuCasinha();
+			let indexComprarTerrenoOuCasa = tabuleiro.persDeveComprarTerrenoOuCasinha();
 			if (indexComprarTerrenoOuCasa <= 0)
 				break;
 
@@ -413,7 +413,7 @@
 	//passar jogada
 	function btnPassarJogada_Click()
 	{
-		if(etapa == 3 && !tabuleiro.persAtualEhBot())
+		if(etapa == 3 && !tabuleiro.persEhBot())
 			passarJogada();
 		else
 		{
@@ -439,7 +439,7 @@
 	//comprar terreno
 	function btnComprarTerreno_Click()
 	{
-		if(etapa == 3 && !tabuleiro.persAtualEhBot() && tabuleiro.personagemConsegueComprarTerreno())
+		if(etapa == 3 && !tabuleiro.persEhBot() && tabuleiro.persPodeComprarTerreno())
 			comprarTerreno();
 		else
 		{
@@ -469,7 +469,7 @@
 		//se btnComprarFelicidade esta aparecendo na tela
 		if(document.getElementById("btnComprarFelicidade").style.display != "none")
 		{
-			if(!tabuleiro.personagemPodeComprarFelicidade())
+			if(!tabuleiro.persPodeComprarFelicidade())
 			{
 				//deixar no lugar do btnComprarTerreno
 				document.getElementById("btnComprarFelicidade").style.display = "none";
@@ -481,7 +481,7 @@
 	//comprar Casinha
 	function btnComprarCasinha_Click()
 	{
-		if(etapa == 3 && !tabuleiro.persAtualEhBot() && tabuleiro.persPodeComprarCasinha())
+		if(etapa == 3 && !tabuleiro.persEhBot() && tabuleiro.persPodeComprarCasinha())
 			comprarCasinha();
 		else
 		{
@@ -514,7 +514,7 @@
 		//e do btnComprarCasinha:
 
 		//se btnComprarFelicidade estava na tela e mas agora nao ha mais dinheiro
-		if(document.getElementById("btnComprarFelicidade").style.display != "none" || !tabuleiro.personagemPodeComprarFelicidade())
+		if(document.getElementById("btnComprarFelicidade").style.display != "none" || !tabuleiro.persPodeComprarFelicidade())
 		{
 			document.getElementById("btnComprarCasinha").style.display = "inline-block";
 			document.getElementById("lbComprarCasinha").style.display = "inline-block";
@@ -525,7 +525,7 @@
 	function btnComprarFelicidade_Click()
 	{
 		var pers = tabuleiro.getPersonagemAtual();
-		if(etapa == 3 && !tabuleiro.persAtualEhBot() && tabuleiro.personagemPodeComprarFelicidade())
+		if(etapa == 3 && !tabuleiro.persEhBot() && tabuleiro.persPodeComprarFelicidade())
 			comprarFelicidade();
 		else
 		{
@@ -544,7 +544,7 @@
 		alert(mudarMsgParaBotSePrecisar("Você comprou 20% de felicidade! A sua felicidade está com " + tabuleiro.getFelicidadePersAtual()));
 
 		//se acabou o dinheiro ou felicidade = 100%, botao desaparece
-		if(!tabuleiro.personagemPodeComprarFelicidade())
+		if(!tabuleiro.persPodeComprarFelicidade())
 		{
 			document.getElementById("btnComprarFelicidade").style.display = "none";
 			document.getElementById("lbComprarFelicidade").style.display = "none";
@@ -556,7 +556,7 @@
 		//se btnComprarTerreno estava na tela mas agora nao ha mais dinheiro para tal
 		if(document.getElementById("btnComprarTerreno").style.display != "none")
 		{
-			if(!tabuleiro.personagemConsegueComprarTerreno())
+			if(!tabuleiro.persPodeComprarTerreno())
 				document.getElementById("btnComprarTerreno").style.display = "none";
 		}else
 			//se btnComprarCasinha estava na tela mas agora nao ha mais dinheiro para tal

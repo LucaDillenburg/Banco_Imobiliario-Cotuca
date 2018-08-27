@@ -489,7 +489,7 @@ Tabuleiro.prototype.persComprarCasinha = function()
 	return result;
 }
 
-Tabuleiro.prototype.personagemConsegueComprarTerreno = function()
+Tabuleiro.prototype.persPodeComprarTerreno = function()
 {
 	var pers = this._personagens[this._indexPersonagemAtual];
 
@@ -553,7 +553,7 @@ Tabuleiro.prototype.persPodeComprarCasinha = function()
 	return this._terrenos[indexTerrenoAtual].podeComprarCasinhaParaEsseTerreno();
 }
 
-Tabuleiro.prototype.personagemPodeComprarFelicidade = function()
+Tabuleiro.prototype.persPodeComprarFelicidade = function()
 {
 	var pers = this._personagens[this._indexPersonagemAtual];
 	if(!pers.vivo)
@@ -563,7 +563,7 @@ Tabuleiro.prototype.personagemPodeComprarFelicidade = function()
 
 
 //BOT
-Tabuleiro.prototype.persAtualDeveComprarTerrenoOuCasinha = function()
+Tabuleiro.prototype.persDeveComprarTerrenoOuCasinha = function()
 {
 	let pers = this._personagens[this._indexPersonagemAtual];
 	if(this.personagemConsegueComprarTerreno())
@@ -576,7 +576,7 @@ Tabuleiro.prototype.persAtualDeveComprarTerrenoOuCasinha = function()
 	}
 }
 
-Tabuleiro.prototype.persAtualDeveComprarFelicidade = function()
+Tabuleiro.prototype.persDeveComprarFelicidade = function()
 {
 	if(!this.personagemPodeComprarFelicidade())
 		return false;
@@ -588,8 +588,8 @@ Tabuleiro.prototype.persAtualDeveComprarFelicidade = function()
 		((pers.felicidade < 30) && pers._dinheiro > _PRECO_COMPRAR_FELICIDADE + 3);
 }
 
-Tabuleiro.prototype.persAtualEhBot = function()
-{
+Tabuleiro.prototype.persEhBot = function()
+{Atual
 	return this._personagens[this._indexPersonagemAtual].ehBot;
 }
 
