@@ -1,4 +1,4 @@
-function Tabuleiro(qtdPers = 4, qtdPersCmBots = 4)
+﻿function Tabuleiro(qtdPers = 4, qtdPersCmBots = 4)
 {
 	pxlsCadaPers = 149.6/qtdPersCmBots;
 
@@ -566,7 +566,7 @@ Tabuleiro.prototype.persPodeComprarFelicidade = function()
 Tabuleiro.prototype.persDeveComprarTerrenoOuCasinha = function()
 {
 	let pers = this._personagens[this._indexPersonagemAtual];
-	if(this.personagemConsegueComprarTerreno())
+	if(this.persPodeComprarTerreno())
 		return (pers._dinheiro >= this._terrenos[pers.indexTerrenoAtual]._preco + 5)?1:0;
 	else
 	{
@@ -578,7 +578,7 @@ Tabuleiro.prototype.persDeveComprarTerrenoOuCasinha = function()
 
 Tabuleiro.prototype.persDeveComprarFelicidade = function()
 {
-	if(!this.personagemPodeComprarFelicidade())
+	if(!this.persPodeComprarFelicidade())
 		return false;
 
 	let pers = this._personagens[this._indexPersonagemAtual];
@@ -589,7 +589,7 @@ Tabuleiro.prototype.persDeveComprarFelicidade = function()
 }
 
 Tabuleiro.prototype.persEhBot = function()
-{Atual
+{
 	return this._personagens[this._indexPersonagemAtual].ehBot;
 }
 
